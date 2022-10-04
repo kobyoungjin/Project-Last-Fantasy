@@ -74,6 +74,11 @@ public class Player : MonoBehaviour
 
     private void Stop()
     {
+        animator.SetBool("batIdle", true);
+
+        if(!animator.GetBool("Running"))
+            animator.SetBool("batIdle", false);
+
         animator.SetBool("Running", false);
 
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") 
