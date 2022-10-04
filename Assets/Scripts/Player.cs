@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     Vector3 destination;
 
     private bool isAttack = false;
+    private bool cannotMove = false;
 
     float speed = 4.0f;
 
@@ -28,8 +29,6 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        animator.SetBool("batIdle", false);
-
         if (inputManager.MoveInput && !isAttack)
         {
             if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out click) )  // 클릭한 지점 레이케스트
@@ -44,14 +43,22 @@ public class Player : MonoBehaviour
             Attack();
             return;
         }
-    
+
+        if (inputManager.KeyCodeQ && !isAttack)
+        {
+            AbilityAttack();
+            return;
+        }
+
         Move();
     }
 
     // 플레이어 이동 함수
     private void Move()
-    {
+    {        
         SetAttackEnd();
+        animator.SetBool("isAttack", false);
+        animator.SetBool("isAbilityAttack", false);
 
         if (Vector3.Distance(destination, this.transform.position) <= 0.1f)  // 거리가 0.1 보다 작으면 정지
         {
@@ -60,7 +67,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        animator.SetBool("Running", true);
+        animator.SetBool("running", true);
 
         Vector3 pos = destination - this.transform.position;
         pos.y = 0f;
@@ -72,21 +79,28 @@ public class Player : MonoBehaviour
         return;
     }
 
+    // 멈춤 함수
     private void Stop()
     {
         animator.SetBool("batIdle", true);
 
-        if(!animator.GetBool("Running"))
+        if(!animator.GetBool("running"))
             animator.SetBool("batIdle", false);
 
-        animator.SetBool("Running", false);
+        animator.SetBool("running", false);
 
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") 
-            && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")    // 애니메이터의 State attack찾고 
+            && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)  // 애니메이션 끝날때까지 기다리기
         {
             animator.SetBool("batIdle", true);
         }
-            
+
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ability")
+            && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+        {
+            animator.SetBool("batIdle", true);
+        }
+
         destination = transform.position;
     }
 
@@ -96,27 +110,33 @@ public class Player : MonoBehaviour
         destination = pos;
     }
 
-    // 공격 함수
+    // 일반 공격 함수
     void Attack()  
     {
         SetAttackStart();
-
+        animator.SetBool("isAttack", true);
+        Stop();
+    }
+    
+    // 스킬 공격함수
+    void AbilityAttack()
+    {
+        SetAttackStart();
+        animator.SetBool("isAbilityAttack", true);
         Stop();
     }
 
+    // 공격 시작 세팅함수
     private void SetAttackStart()
     {
         isAttack = true;
-
-        animator.SetBool("isAttack", true);
-        animator.SetBool("batIdle", false);
-        animator.SetBool("Running", false);
+        cannotMove = true;
     }
 
+    // 공격 끝 세팅함수
     private void SetAttackEnd()
     {
         isAttack = false;
-
-        animator.SetBool("isAttack", false);
+        cannotMove = false;
     }
 }
