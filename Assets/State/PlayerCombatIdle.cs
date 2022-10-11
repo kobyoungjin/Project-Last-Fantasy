@@ -19,7 +19,6 @@ namespace PlayerState
         {
             Player player = GetPlayer(animator);
 
-
             //Timer(animator);
             //Debug.Log(curAnimationTime);
             //if (curAnimationTime > 5f)
@@ -66,6 +65,7 @@ namespace PlayerState
 
             if (player.GetInput().KeyCodeQ)
             {
+                animator.SetBool("batIdle", false);
                 animator.SetBool("isAbilityAttack", true);
             }
         }

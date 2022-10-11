@@ -20,3 +20,22 @@ namespace PlayerState
     }
 }
 
+namespace EnemyState
+{
+    public class EnemyStateBase : StateMachineBehaviour
+    {
+        private EnemySkeleton skeleton;
+
+        public EnemySkeleton GetEnemy(Animator animator)
+        {
+            if (skeleton == null)
+            {
+                skeleton = animator.GetComponent<EnemySkeleton>();
+            }
+
+            return skeleton;
+        }
+    }
+    
+}
+

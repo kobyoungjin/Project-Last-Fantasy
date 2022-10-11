@@ -18,7 +18,7 @@ namespace PlayerState
             Player player = GetPlayer(animator);
 
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ability")
-                 && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+                 && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
             {
                 animator.SetBool("batIdle", true);
                 animator.SetBool("isAbilityAttack", false);

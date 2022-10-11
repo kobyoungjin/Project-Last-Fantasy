@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
 
     private Camera camera;
     private InputManager inputManager;
-    private Animator animator;
+    private GameManager gameManager;
     private RaycastHit click;
 
     Vector3 destination;
@@ -31,6 +31,11 @@ public class Player : MonoBehaviour
     private void Start()
     {
         inputManager = GetComponent<InputManager>();
+       // gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+    }
+
+    void Update()
+    { 
     }
 
     // 마우스 좌표 설정함수
@@ -58,9 +63,4 @@ public class Player : MonoBehaviour
     {
         return camera;
     }
-
-
-    
-
-
 }
