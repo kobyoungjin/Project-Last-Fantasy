@@ -20,6 +20,7 @@ namespace PlayerState
             attackInput = Input.GetMouseButton(0);
             keyCodeQ = Input.GetKeyDown(KeyCode.Q);
 
+            print("InputManager print"+moveInput);
             //if (Input.GetKeyDown(keyCode))
             //    keyCode = 
         }

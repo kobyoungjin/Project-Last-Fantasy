@@ -13,14 +13,12 @@ public enum AnimState
     abilityAttack,
 }
 
-public class Player : BaseGameEntity
+public class Player : StateMachine
 {
     private Camera camera;
     private InputManager inputManager;
     private RaycastHit click;
     Animator animator;
-
-    private LocationInfo currentLocation;
 
     Vector3 destination;
 
@@ -28,67 +26,64 @@ public class Player : BaseGameEntity
     int hp;
     int mp;
 
-    private AnimState[] states;
-    private AnimState currentState;
+    //private State[] states;
+    //private State currentState;
 
-    private void Awake()
+    [HideInInspector]
+    public Idle idleState;
+    //[HideInInspector]
+    //public CombatIdle combatIdle;
+    [HideInInspector]
+    public Running runningState;
+
+
+    //private AnimState currentAnimState;
+
+    void Awake()
     {
         camera = Camera.main;
-        currentState = AnimState.idle;
+        //currentAnimState = AnimState.idle;
+
+        idleState = new Idle(this);
+        runningState = new Running(this);
+        //combatIdle = new CombatIdle(this);
     }
 
-    private void Start()
+    void Start()
     {
+        Debug.Log("Player scripts");
         animator = GetComponent<Animator>();
         inputManager = GetComponent<InputManager>();
-       // gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+        // gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+
+        GetInitialState();
     }
 
     void Update()
     {
-        if (GetInput().MoveInput)
-        {
-            RaycastHit click;
+        currentState = idleState;
 
-            ChangeState(AnimState.running);
-            if (Physics.Raycast(GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
-            {
-                Debug.Log(currentState);
-                SetPosition(click.point);
-            }
-        }
+        print(currentState.name);
 
-        if (GetInput().AttackInput)
-        {
-            ChangeState(AnimState.attack);
-            Debug.Log(currentState);
-            
-            return;
-        }
+        
+        //if (GetInput().MoveInput)
+        //    ChangeState(AnimState.running);
+        //else if (entity.GetInput().AttackInput)
+        //    entity.ChangeState(AnimState.attack);
+        //else if (entity.GetInput().KeyCodeQ)
+        //    entity.ChangeState(AnimState.abilityAttack);
 
-        Move();
+        //Move();
     }
-
-    public void Updated()
+    
+    protected override BaseState GetInitialState()
     {
-
-    }
-
-    public override void Init(string name)
-    {
-        base.Init(name);
-
-        gameObject.name = "Player";
-
-        hp = 100;
-        mp = 100;
-        //currentLocation = LocationInfo.
+        print("Player init");
+        return idleState;
     }
 
     void Move()
     {
-       
-
         //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ability")
         //       && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
         //{
@@ -106,19 +101,19 @@ public class Player : BaseGameEntity
         //    animator.SetBool("isAbilityAttack", true);
         //}
 
-        Vector3 pos = GetPosition() - transform.position;
-        pos.y = 0f;
+        //Vector3 pos = GetPosition() - transform.position;
+        //pos.y = 0f;
 
-        if (pos.magnitude <= 0.1f)
-        {
-            ChangeState(AnimState.combatIdle);
-            Debug.Log(currentState);
-            return;
-        }
+        //if (pos.magnitude <= 0.1f)
+        //{
+        //    ChangeState(AnimState.combatIdle);
+        //    Debug.Log(currentState);
+        //    return;
+        //}
 
-        var rotate = Quaternion.LookRotation(pos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotate, Time.deltaTime * 5f);  // 천천히 회전
-        transform.position += pos.normalized * Time.deltaTime * GetSpeed();
+        //var rotate = Quaternion.LookRotation(pos);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, rotate, Time.deltaTime * 5f);  // 천천히 회전
+        //transform.position += pos.normalized * Time.deltaTime * GetSpeed();
     }
 
     // 마우스 좌표 설정함수
@@ -146,23 +141,23 @@ public class Player : BaseGameEntity
     {
         return camera;
     }
+    
+    //public void ChangeAnimState(AnimState newState)
+    //{
+    //    animator.SetBool(currentAnimState.ToString(), false);
+    //    currentAnimState = newState;
+    //    animator.SetBool(currentAnimState.ToString(), true);
+    //}
 
-    public void ChangeState(AnimState name)
-    {
-        animator.SetBool(currentState.ToString(), false);
-        currentState = name;
-        animator.SetBool(currentState.ToString(), true);
-    }
+    //public void SetAnimState(AnimState newState)
+    //{
+    //    currentAnimState = newState;
+    //}
 
-    public void SetAnimState(AnimState name)
-    {
-        currentState = name;
-    }
-
-    public string GetState()
-    {
-        return currentState.ToString();
-    }
+    //public string GetState()
+    //{
+    //    return currentState.ToString();
+    //}
 
     public int GetHP()
     {
@@ -183,4 +178,44 @@ public class Player : BaseGameEntity
     {
         this.mp = mp;
     }
+
+    //public void Updated()
+    //{
+    //    if (currentState != null)
+    //        currentState.Excute(this);
+    //}
+
+    //public override void Init(string name)
+    //{
+    //    base.Init(name);
+
+    //    gameObject.name = "Player";
+
+    //    states = new State[10];
+    //    states[(int)AnimState.idle] = new PlayerStates.Idle();
+    //    states[(int)AnimState.combatIdle] = new PlayerStates.CombatIdle();
+    //    states[(int)AnimState.running] = new PlayerStates.Running();
+    //    states[(int)AnimState.attack] = new PlayerStates.Attack();
+
+    //    ChangeState(AnimState.idle);
+    //    hp = 100;
+    //    mp = 100;
+    //    //currentLocation = LocationInfo.
+    //}
+
+    //public void ChangeState(AnimState newState)
+    //{
+    //    // 새로 바꾸려는 상태가 비어있으면 상태를 바꾸지 않는다
+    //    if (states[(int)newState] == null) return;
+
+    //    // 현재 재생중인 상태가 있으면 Exit() 메소드 호출
+    //    if (currentState != null)
+    //    {
+    //        currentState.Exit(this);
+    //    }
+
+    //    // 새로운 상태로 변경하고, 새로 바뀐 상태의 Enter() 메소드 호출
+    //    currentState = states[(int)newState];
+    //    currentState.Enter(this);
+    //}s
 }

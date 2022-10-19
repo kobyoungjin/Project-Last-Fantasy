@@ -41,9 +41,13 @@ namespace EnemyState
 
 public abstract class State
 {
+    //public State(string name, )
+
     public abstract void Enter(Player entity);
 
     public abstract void Excute(Player entity);
+
+    public abstract void PhysicsExcute(Player entity);
 
     public abstract void Exit(Player entity);
 }
