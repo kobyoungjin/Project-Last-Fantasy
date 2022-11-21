@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 {
-    Player entity;
-
     public static bool IsLooping { set; get; } = true;
+
 
     //protected override void Awake()
     //{
     //    base.Awake();
-        
+
     //    var objs = FindObjectsOfType<GameManager>();
     //    if (objs.Length == 1)  // GameManager타입의 개수가 1개일때만 
     //        DontDestroyOnLoad(this.gameObject);
@@ -25,23 +24,19 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     //    return;
     //}
 
-    void Awake()
+    void Start()
     {
-        entity = FindObjectOfType<Player>().GetComponent<Player>();
-        //entity.Init(entity.name);
-        
+     
     }
-    
+
     void Update()
     {
-        if (!IsLooping) return;
+       
 
         
         //entity.Updated();
     }
 
-    public static void Stop(BaseGameEntity entity)
-    {
-        IsLooping = false;
-    }
+   
+        
 }
