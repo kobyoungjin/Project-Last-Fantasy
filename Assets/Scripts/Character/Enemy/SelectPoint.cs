@@ -8,8 +8,8 @@ namespace FSM
     {
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            EnemySkeleton enemySkeleton = animator.gameObject.GetComponent<EnemySkeleton>();
-            enemySkeleton.Move();
+            //EnemySkeleton enemySkeleton = animator.gameObject.GetComponent<EnemySkeleton>();
+           // enemySkeleton.Move();
         }
     }
 }

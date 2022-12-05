@@ -6,8 +6,8 @@ using UnityEngine.AI;
 namespace FSM
 {
     public class EnemySkeleton : MonoBehaviour
-    {
-        float speed = 3;
+    { 
+        float speed = 2;
         Vector3 destination;
         Vector3 StartPos;
 
@@ -32,15 +32,15 @@ namespace FSM
         private Transform playerTrans;
         private Transform enemyTrans;
 
-        private float attackDistance = 2.0f;
+        private float attackDistance = 1.0f;
         private float traceDistance = 8.0f;
 
         public bool isDie = false;
         private WaitForSeconds ws;
 
         // 순찰 여부 판단 변수
-        private readonly float pattrollSpeed = 5.0f;
-        private readonly float traceSpeed = 4.0f;
+        private readonly float pattrollSpeed = 2.0f;
+        private readonly float traceSpeed = 2.5f;
         private float damping = 1.0f;
 
         private bool isPatrolling;
@@ -179,7 +179,7 @@ namespace FSM
             newState.Exit();
         }
 
-        void TraceTarget(Vector3 pos)
+        public void TraceTarget(Vector3 pos)
         {
             if (navMeshAgent.isPathStale)
                 return;
@@ -225,6 +225,7 @@ namespace FSM
                 else
                     currentState = EnemySkeletonState.pattroll;
 
+                print(currentState);
                 yield return ws;
             }
         }
@@ -326,6 +327,11 @@ namespace FSM
         public float GetSpeed()
         {
             return navMeshAgent.velocity.magnitude;
+        }
+
+        public float GetDumping()
+        {
+            return damping;
         }
 
         public void SetSpeed(float speed)

@@ -32,7 +32,7 @@ namespace FSM
             
             wayPoints = skeleton.GetWayPoints();
             this.skeleton.SetCurrentState(EnemySkeletonState.pattroll);
-            animator.SetBool("Pattrol", true);
+            animator.SetBool("pattrol", true);
             skeleton.SetPattrolling(true);
             animator.SetBool("isMove", true);
 
@@ -44,6 +44,8 @@ namespace FSM
             Debug.Log("SkeletonPattrolExcute");
 
             float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
+            Debug.Log((int)distance);
+            animator.SetFloat("distance", distance);
 
             if (distance <= skeleton.GetAttackDistance())
                 skeleton.ChangeState(EnemySkeletonState.attack);
@@ -64,7 +66,10 @@ namespace FSM
         public override void Exit()
         {
             Debug.Log("SkeletonPattrolExit");
+
+            //navMeshAgent.Stop();
             skeleton.SetPattrolling(false);
+            animator.SetBool("pattrol", false);
         }
     }
     
@@ -84,20 +89,29 @@ namespace FSM
             Debug.Log("SkeletonTraceEnter");
 
             animator = skeleton.GetAnimator();
+            navMeshAgent = skeleton.transform.GetComponent<NavMeshAgent>();
+            navMeshAgent.autoBraking = false;       // 균등한 속도를 위해
+            navMeshAgent.updateRotation = false;   //자동으로 회전하는 기능을 비활성화
+            navMeshAgent.speed = skeleton.GetPattrollSpeed();
 
             skeleton.SetCurrentState(EnemySkeletonState.trace);
-            animator.SetBool("running", true);
+            animator.SetBool("isInPlayer", true);
             
             skeleton.Tracing = skeleton.GetPlayer().transform.position;
+            //skeleton.TraceTarget(skeleton.GetPlayer().transform.position);
             animator.SetBool("isMove", true);
+
+            
         }
 
         public override void Excute()
         {
             Debug.Log("SkeletonTraceExcute");
 
-            float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
             
+
+            float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
+            animator.SetFloat("distance", distance);
             if (distance <= skeleton.GetAttackDistance())
                 skeleton.ChangeState(EnemySkeletonState.attack);
 
@@ -107,7 +121,14 @@ namespace FSM
 
         public override void PhysicsExcute()
         {
-            
+            skeleton.Tracing = skeleton.GetPlayer().transform.position;
+
+            if (navMeshAgent.isStopped == false)
+            {
+                Quaternion rot = Quaternion.LookRotation(navMeshAgent.desiredVelocity);
+                Debug.Log(rot);
+                skeleton.transform.rotation = Quaternion.Slerp(skeleton.transform.rotation, rot, Time.deltaTime * skeleton.GetDumping());
+            }
         }
 
         public override void Exit()
@@ -143,11 +164,16 @@ namespace FSM
             Debug.Log("SkeletonAttackExcute");
 
             float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
-                    
-            if (distance > skeleton.GetAttackDistance() && distance <= skeleton.GetTraceDistance())
+            animator.SetFloat("distance", distance);
+
+            // 공격중 이동 입력이 없으면 끝까지 애니메이션 출력
+            if (distance > skeleton.GetAttackDistance() && distance <= skeleton.GetTraceDistance() 
+                && animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
+                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                 skeleton.ChangeState(EnemySkeletonState.trace);
 
-            if (distance > skeleton.GetTraceDistance())
+            if (distance > skeleton.GetTraceDistance() && animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
+                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                 skeleton.ChangeState(EnemySkeletonState.pattroll);
 
 
