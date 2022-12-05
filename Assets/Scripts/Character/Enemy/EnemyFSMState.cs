@@ -25,16 +25,14 @@ namespace FSM
 
             animator = skeleton.GetAnimator();
 
-            navMeshAgent = skeleton.transform.GetComponent<NavMeshAgent>();
-            navMeshAgent.autoBraking = false;       // 균등한 속도를 위해
-            navMeshAgent.updateRotation = false;   //자동으로 회전하는 기능을 비활성화
-            navMeshAgent.speed = skeleton.GetPattrollSpeed();
-            
-            wayPoints = skeleton.GetWayPoints();
+            navMeshAgent = skeleton.navInit(navMeshAgent);
+
+             wayPoints = skeleton.GetWayPoints();
             this.skeleton.SetCurrentState(EnemySkeletonState.pattroll);
-            animator.SetBool("pattrol", true);
+
             skeleton.SetPattrolling(true);
-            animator.SetBool("isMove", true);
+            animator.SetBool("pattrol", true);
+            animator.SetBool("isMove", false);
 
             skeleton.MoveWayPoint();
         }
@@ -43,8 +41,7 @@ namespace FSM
         {
             Debug.Log("SkeletonPattrolExcute");
 
-            float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
-            Debug.Log((int)distance);
+            float distance = skeleton.GetDistance();
             animator.SetFloat("distance", distance);
 
             if (distance <= skeleton.GetAttackDistance())
@@ -60,14 +57,14 @@ namespace FSM
                 return;
             
             animator.SetFloat("speed", navMeshAgent.velocity.magnitude);
-            skeleton.Move();
+            skeleton.LookingForward();
+            skeleton.CheckToPoint();
         }
 
         public override void Exit()
         {
             Debug.Log("SkeletonPattrolExit");
 
-            //navMeshAgent.Stop();
             skeleton.SetPattrolling(false);
             animator.SetBool("pattrol", false);
         }
@@ -89,28 +86,22 @@ namespace FSM
             Debug.Log("SkeletonTraceEnter");
 
             animator = skeleton.GetAnimator();
-            navMeshAgent = skeleton.transform.GetComponent<NavMeshAgent>();
-            navMeshAgent.autoBraking = false;       // 균등한 속도를 위해
-            navMeshAgent.updateRotation = false;   //자동으로 회전하는 기능을 비활성화
-            navMeshAgent.speed = skeleton.GetPattrollSpeed();
+
+            navMeshAgent = skeleton.navInit(navMeshAgent);
 
             skeleton.SetCurrentState(EnemySkeletonState.trace);
-            animator.SetBool("isInPlayer", true);
             
             skeleton.Tracing = skeleton.GetPlayer().transform.position;
             //skeleton.TraceTarget(skeleton.GetPlayer().transform.position);
-            animator.SetBool("isMove", true);
-
-            
+            animator.SetBool("isMove", true);            
         }
 
         public override void Excute()
         {
             Debug.Log("SkeletonTraceExcute");
 
-            
+            float distance = skeleton.GetDistance();
 
-            float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
             animator.SetFloat("distance", distance);
             if (distance <= skeleton.GetAttackDistance())
                 skeleton.ChangeState(EnemySkeletonState.attack);
@@ -123,12 +114,7 @@ namespace FSM
         {
             skeleton.Tracing = skeleton.GetPlayer().transform.position;
 
-            if (navMeshAgent.isStopped == false)
-            {
-                Quaternion rot = Quaternion.LookRotation(navMeshAgent.desiredVelocity);
-                Debug.Log(rot);
-                skeleton.transform.rotation = Quaternion.Slerp(skeleton.transform.rotation, rot, Time.deltaTime * skeleton.GetDumping());
-            }
+            skeleton.LookingForward();
         }
 
         public override void Exit()
@@ -154,7 +140,7 @@ namespace FSM
 
             animator = skeleton.GetAnimator();
             this.skeleton.SetCurrentState(EnemySkeletonState.attack);
-            //nimator.SetBool("attack", true);
+            
             animator.SetBool("isMove", false);
             skeleton.Stop();
         }
@@ -163,30 +149,37 @@ namespace FSM
         {
             Debug.Log("SkeletonAttackExcute");
 
-            float distance = Vector3.Distance(skeleton.GetPlayer().transform.position, skeleton.transform.position);
+            float distance = skeleton.GetDistance();
             animator.SetFloat("distance", distance);
 
             // 공격중 이동 입력이 없으면 끝까지 애니메이션 출력
-            if (distance > skeleton.GetAttackDistance() && distance <= skeleton.GetTraceDistance() 
-                && animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
+            if (distance > skeleton.GetAttackDistance() && distance <= skeleton.GetTraceDistance())
+            {
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
                     && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
-                skeleton.ChangeState(EnemySkeletonState.trace);
+                    skeleton.ChangeState(EnemySkeletonState.trace);
+            }
+            else
+            {
+                
+            }
 
-            if (distance > skeleton.GetTraceDistance() && animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
+            if (distance > skeleton.GetTraceDistance())
+            {
+                if(animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
                     && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                 skeleton.ChangeState(EnemySkeletonState.pattroll);
+            }
+            else
+            {
 
-
-            //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")    // 애니메이터의 State attack찾고 
-            //        && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)  // 애니메이션 끝날때까지 기다리기
-            //{
-            //    skeleton.ChangeState(EnemySkeletonState.pattroll);
-            //}
+            }
         }
 
         public override void Exit()
         {
             Debug.Log("SkeletonAttackExit");
+            animator.SetBool("isMove", true);
         }
 
         public override void PhysicsExcute()

@@ -9,7 +9,7 @@ namespace FSM
     { 
         float speed = 2;
         Vector3 destination;
-        Vector3 StartPos;
+        Vector3 startPos;
 
         SphereCollider sphereCollider;
 
@@ -40,7 +40,7 @@ namespace FSM
 
         // 순찰 여부 판단 변수
         private readonly float pattrollSpeed = 2.0f;
-        private readonly float traceSpeed = 2.5f;
+        private readonly float traceSpeed = 2.2f;
         private float damping = 1.0f;
 
         private bool isPatrolling;
@@ -55,7 +55,7 @@ namespace FSM
                 {
                     navMeshAgent.speed = pattrollSpeed;
                     // 순찰 상태의 회전계수
-                    damping = 1.0f;
+                    damping = 1.5f;
                     MoveWayPoint();
                 }
             }
@@ -69,6 +69,15 @@ namespace FSM
             set
             {
                 traceTarget = value;
+
+                float distance = Vector3.Distance(traceTarget, GetStartPos());
+                Debug.Log(distance);
+                if (distance > 15.0f && !Patrolling)
+                {
+                    TraceTarget(startPos);
+                    navMeshAgent.speed = traceSpeed * 2.0f;
+                    return;
+                }
                 navMeshAgent.speed = traceSpeed;
                 // 순찰 상태의 회전계수
                 damping = 7.0f;
@@ -104,7 +113,7 @@ namespace FSM
 
         void Start()
         {
-            StartPos = this.transform.position;
+            startPos = this.transform.position;
             sphereCollider = this.GetComponent<SphereCollider>();
 
             navMeshAgent = GetComponent<NavMeshAgent>();
@@ -119,18 +128,12 @@ namespace FSM
                 wayPointsGroup.GetComponentsInChildren<Transform>(wayPoints);
                 wayPoints.RemoveAt(0);
             }
-
-            //MoveWayPoint();
+            
             Enter();
         }
 
         void Update()
         {
-            //if (!isPatrolling)
-            //    return;
-            //animator.SetFloat("speed", Speed);
-            //Move();
-
             Excute();         
         }
 
@@ -148,6 +151,16 @@ namespace FSM
             arrState[(int)EnemySkeletonState.attack] = new EnemySkeletonAttack(this);
 
             newState.SetState(arrState[(int)EnemySkeletonState.pattroll], this);
+        }
+
+        public NavMeshAgent navInit(NavMeshAgent nav)
+        {
+            nav = transform.GetComponent<NavMeshAgent>();
+            nav.autoBraking = false;       // 균등한 속도를 위해
+            nav.updateRotation = false;   //자동으로 회전하는 기능을 비활성화
+            nav.speed = GetPattrollSpeed();
+
+            return nav;
         }
 
         public void ChangeState(EnemySkeletonState skeletonState)
@@ -179,7 +192,7 @@ namespace FSM
             newState.Exit();
         }
 
-        public void TraceTarget(Vector3 pos)
+        private void TraceTarget(Vector3 pos)
         {
             if (navMeshAgent.isPathStale)
                 return;
@@ -188,16 +201,19 @@ namespace FSM
             navMeshAgent.isStopped = false;
         }
 
-        public void Move()
+        public void LookingForward()
         {
             if (navMeshAgent.isStopped == false)
             {
-                Quaternion rot = Quaternion.LookRotation(navMeshAgent.desiredVelocity);
-                Debug.Log(rot);
+                Quaternion rot = Quaternion.LookRotation(navMeshAgent.desiredVelocity);       
                 enemyTrans.rotation = Quaternion.Slerp(enemyTrans.rotation, rot, Time.deltaTime * damping);
             }
+        }
+
+        public void CheckToPoint()
+        {
             if (!isPatrolling)
-               return;
+                return;
 
             // 이동과 목적지에 도착했는지 여부 계산
             if (navMeshAgent.velocity.sqrMagnitude >= 0.2f * 0.2f
@@ -209,59 +225,6 @@ namespace FSM
                 MoveWayPoint();
             }
         }
-
-        IEnumerator CheckState()
-        {
-            while (!isDie)
-            {
-                if (currentState == EnemySkeletonState.die) yield break;
-
-                float distance = Vector3.Distance(playerTrans.position, enemyTrans.position);
-
-                if (distance <= attackDistance)
-                    currentState = EnemySkeletonState.attack;
-                else if (distance <= traceDistance)
-                    currentState = EnemySkeletonState.trace;
-                else
-                    currentState = EnemySkeletonState.pattroll;
-
-                print(currentState);
-                yield return ws;
-            }
-        }
-
-        IEnumerator Action()
-        {
-            while (!isDie)
-            {
-                yield return ws;
-
-                switch (currentState)
-                {
-                    case EnemySkeletonState.pattroll:
-                        isPatrolling = true;
-                        animator.SetBool("isMove", true);
-                        break;
-                    case EnemySkeletonState.trace:
-                        Tracing = playerTrans.position;
-                        animator.SetBool("isMove", true);
-                        break;
-                    case EnemySkeletonState.attack:
-                        Stop();
-                        animator.SetBool("isMove", false);
-                        break;
-                    case EnemySkeletonState.die:
-                        Stop();
-                        break;
-                }
-            }
-        }
-
-        //private void OnEnable()
-        //{
-        //    StartCoroutine(CheckState());
-        //    StartCoroutine(Action());
-        //}
 
         public void MoveWayPoint()
         {
@@ -277,6 +240,11 @@ namespace FSM
             navMeshAgent.isStopped = true;
             navMeshAgent.velocity = Vector3.zero;
             isPatrolling = false;
+        }
+
+        public float GetDistance()
+        {
+            return Vector3.Distance(player.transform.position, transform.position);
         }
 
         public List<Transform> GetWayPoints()
@@ -351,7 +319,13 @@ namespace FSM
 
         public float GetTraceDistance()
         {
-            return traceDistance;
+            //return traceDistance;
+            return GetComponent<SphereCollider>().radius;
+        }
+
+        public Vector3 GetStartPos()
+        {
+            return startPos;
         }
 
         public GameObject GetPlayer()
@@ -364,19 +338,14 @@ namespace FSM
             if (other.gameObject.CompareTag("Player"))
             {
                 animator.SetBool("isInPlayer", true);
-                Vector3 pos = GetDestinationPos() - other.transform.position;
-                pos.y = 0f;
+            }
+        }
 
-                if (pos.magnitude <= 0.1f)
-                {
-                    //animator.SetBool("running", false);
-                    //animator.SetBool("batIdle", true);
-                    return;
-                }
-
-                var rotate = Quaternion.LookRotation(pos);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotate, Time.deltaTime * 5f);  // 천천히 회전
-                transform.position += pos.normalized * Time.deltaTime * GetSpeed();
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                animator.SetBool("isInPlayer", false);
             }
         }
     }
