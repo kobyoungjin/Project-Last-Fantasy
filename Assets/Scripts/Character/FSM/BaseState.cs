@@ -28,7 +28,7 @@ public enum PlayerState
 
 public enum EnemySkeletonState
 {
-   pattroll =0,
+   patrol =0,
    trace,
    attack,
    die,

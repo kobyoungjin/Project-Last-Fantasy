@@ -5,16 +5,13 @@ using UnityEngine.AI;
 
 namespace FSM
 {
-    public class EnemySkeletonPattrol : BaseState<EnemySkeleton>
+    public class EnemySkeletonPatrol : BaseState<EnemySkeleton>
     {
         private EnemySkeleton skeleton;
         private Animator animator;
         private NavMeshAgent navMeshAgent;
-        private List<Transform> wayPoints;
 
-        public int nextPoint = 0;
-
-        public EnemySkeletonPattrol(EnemySkeleton owner)
+        public EnemySkeletonPatrol(EnemySkeleton owner)
         {
             this.skeleton = owner;
         }
@@ -25,16 +22,13 @@ namespace FSM
 
             animator = skeleton.GetAnimator();
 
-            navMeshAgent = skeleton.navInit(navMeshAgent);
+            navMeshAgent = skeleton.GetNavMeshAgent();
 
-             wayPoints = skeleton.GetWayPoints();
-            this.skeleton.SetCurrentState(EnemySkeletonState.pattroll);
-
-            skeleton.SetPattrolling(true);
+            //skeleton.SetPattrolling(true);
             animator.SetBool("pattrol", true);
             animator.SetBool("isMove", false);
 
-            skeleton.MoveWayPoint();
+            skeleton.CheckAndMovePoint(skeleton.GetWayPoints());
         }
 
         public override void Excute()
@@ -45,7 +39,10 @@ namespace FSM
             animator.SetFloat("distance", distance);
 
             if (distance <= skeleton.GetAttackDistance())
+            {
                 skeleton.ChangeState(EnemySkeletonState.attack);
+                return;
+            }
 
             if (distance <= skeleton.GetTraceDistance())
                 skeleton.ChangeState(EnemySkeletonState.trace);
@@ -55,10 +52,10 @@ namespace FSM
         {
             if (!skeleton.GetPattrolling())
                 return;
-            
+
             animator.SetFloat("speed", navMeshAgent.velocity.magnitude);
             skeleton.LookingForward();
-            skeleton.CheckToPoint();
+            skeleton.CheckAndMovePoint(skeleton.GetWayPoints());
         }
 
         public override void Exit()
@@ -69,7 +66,7 @@ namespace FSM
             animator.SetBool("pattrol", false);
         }
     }
-    
+
     public class EnemySkeletonTrace : BaseState<EnemySkeleton>
     {
         private EnemySkeleton skeleton;
@@ -86,14 +83,11 @@ namespace FSM
             Debug.Log("SkeletonTraceEnter");
 
             animator = skeleton.GetAnimator();
+            animator.SetBool("isMove", true);
 
-            navMeshAgent = skeleton.navInit(navMeshAgent);
+            navMeshAgent = skeleton.GetNavMeshAgent();
 
-            skeleton.SetCurrentState(EnemySkeletonState.trace);
-            
             skeleton.Tracing = skeleton.GetPlayer().transform.position;
-            //skeleton.TraceTarget(skeleton.GetPlayer().transform.position);
-            animator.SetBool("isMove", true);            
         }
 
         public override void Excute()
@@ -104,16 +98,18 @@ namespace FSM
 
             animator.SetFloat("distance", distance);
             if (distance <= skeleton.GetAttackDistance())
+            {
                 skeleton.ChangeState(EnemySkeletonState.attack);
+                return;
+            }
 
             if (distance > skeleton.GetTraceDistance())
-                skeleton.ChangeState(EnemySkeletonState.pattroll);
+                skeleton.ChangeState(EnemySkeletonState.patrol);
         }
 
         public override void PhysicsExcute()
         {
             skeleton.Tracing = skeleton.GetPlayer().transform.position;
-
             skeleton.LookingForward();
         }
 
@@ -139,9 +135,8 @@ namespace FSM
             Debug.Log("SkeletonAttackEnter");
 
             animator = skeleton.GetAnimator();
-            this.skeleton.SetCurrentState(EnemySkeletonState.attack);
-            
             animator.SetBool("isMove", false);
+
             skeleton.Stop();
         }
 
@@ -153,27 +148,19 @@ namespace FSM
             animator.SetFloat("distance", distance);
 
             // 공격중 이동 입력이 없으면 끝까지 애니메이션 출력
-            if (distance > skeleton.GetAttackDistance() && distance <= skeleton.GetTraceDistance())
+            if (distance < skeleton.GetAttackDistance()) return;
+
+            if (distance <= skeleton.GetTraceDistance())
             {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
-                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                     skeleton.ChangeState(EnemySkeletonState.trace);
-            }
-            else
-            {
-                
+
+                return;
             }
 
-            if (distance > skeleton.GetTraceDistance())
-            {
-                if(animator.GetCurrentAnimatorStateInfo(0).IsName("Skeleton@Attack01")
-                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
-                skeleton.ChangeState(EnemySkeletonState.pattroll);
-            }
-            else
-            {
-
-            }
+            Debug.LogWarning("AttackToPatrol");
+            //if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+             //   skeleton.ChangeState(EnemySkeletonState.patrol);
         }
 
         public override void Exit()
