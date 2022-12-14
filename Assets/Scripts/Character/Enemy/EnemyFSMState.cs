@@ -37,7 +37,7 @@ namespace FSM
 
             float distance = skeleton.GetDistance();
             animator.SetFloat("distance", distance);
-
+            Debug.Log(navMeshAgent.destination);
             if (distance <= skeleton.GetAttackDistance())
             {
                 skeleton.ChangeState(EnemySkeletonState.attack);

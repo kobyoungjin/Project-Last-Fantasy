@@ -52,10 +52,10 @@ namespace FSM
                 isPatrolling = value;
                 if (isPatrolling)
                 {
-                    navMeshAgent.speed = pattrollSpeed;
+                    //navMeshAgent.speed = pattrollSpeed;
                     // 순찰 상태의 회전계수
                     damping = 1.5f;
-                    CheckAndMovePoint(GetWayPoints());
+                    //CheckAndMovePoint(GetWayPoints());
                 }
             }
         }
@@ -70,7 +70,6 @@ namespace FSM
                 traceTarget = value;
 
                 float distance = Vector3.Distance(traceTarget, GetStartPos());
-                Debug.Log(distance);
                 if (distance > 15.0f && !Patrolling)
                 {
                     //TraceTarget(startPos);
@@ -161,6 +160,7 @@ namespace FSM
         public void Excute()
         {
             newState.Excute();
+            Debug.Log(navMeshAgent.destination);
         }
 
         public void PhysicsExcute()
@@ -197,7 +197,7 @@ namespace FSM
             if (!isPatrolling)
                 return;
 
-            if (navMeshAgent.velocity.sqrMagnitude ==0 && navMeshAgent.remainingDistance ==0)
+            if (navMeshAgent.velocity.sqrMagnitude == 0 && navMeshAgent.remainingDistance == 0)
             {
                 nextPoint = 0;
                 navMeshAgent.destination = gameObjects[nextPoint].position;
@@ -214,8 +214,7 @@ namespace FSM
 
                 ++nextPoint;
                 nextPoint = nextPoint % gameObjects.Count;  // 다음 목적지 배열 계산
-
-                Debug.Log(nextPoint);
+                
                 navMeshAgent.destination = gameObjects[nextPoint].position;
                 navMeshAgent.isStopped = false;
             }
