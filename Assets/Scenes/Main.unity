@@ -240,7 +240,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 659855760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.92, y: 0, z: -10.1}
+  m_LocalPosition: {x: 1.06, y: 0, z: 17.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 855944255}
@@ -1518,7 +1518,7 @@ MonoBehaviour:
           height: 160
         description: 
         target: {fileID: 6102168432542863572}
-        speed: 2
+        speed: 1.5
         stoppingDistance: 1.5
     00000010:
       type: {class: Rotator, ns: UniBT, asm: UniBT}

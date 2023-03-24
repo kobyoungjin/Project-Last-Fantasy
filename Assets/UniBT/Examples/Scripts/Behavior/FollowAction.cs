@@ -5,7 +5,6 @@ namespace UniBT.Examples.Scripts.Behavior
 {
     public class FollowAction : Action
     {
-
         private static readonly int Walking = Animator.StringToHash("Walking");
         private static readonly int Running = Animator.StringToHash("Running");
         
@@ -22,6 +21,7 @@ namespace UniBT.Examples.Scripts.Behavior
 
         private NavMeshAgent navMeshAgent;
 
+        private bool isItInitPos = true;
         public override void Awake()
         {
             navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
@@ -34,23 +34,61 @@ namespace UniBT.Examples.Scripts.Behavior
             navMeshAgent.isStopped = false;
             navMeshAgent.speed = speed;
             navMeshAgent.stoppingDistance = stoppingDistance;
-            navMeshAgent.SetDestination(target.GetChild(index).position);
-            if (IsDone)
+
+            Debug.Log(target.GetChild(index));
+            Debug.Log(isItInitPos);
+            if (Vector3.Distance(target.GetChild(index).position, navMeshAgent.transform.position) > 20)
             {
+                isItInitPos = false;
+
                 SetWalking(false);
+                SetRunning(true);
+                navMeshAgent.SetDestination(target.GetChild(index).position);
+
+                return Status.Running;
+            }
+            else
+                navMeshAgent.SetDestination(target.GetChild(index).position);
+                         
+            
+            
+            if (IsDone) // 목표에 도착했을때
+            {
+                isItInitPos = true;
+                SetWalking(false);
+                SetRunning(false);
+
+                if (target.CompareTag("Player"))
+                    return Status.Running;
+
                 ++index;
                 index = index % target.childCount;
                 navMeshAgent.SetDestination(target.GetChild(index).position);
-                //return Status.Success;
+                return Status.Running;
+            }
+
+            if (target.CompareTag("Player"))
+            {
+                if (!isItInitPos) return Status.Running;
+
+                SetWalking(false);
+                SetRunning(true);
+                navMeshAgent.SetDestination(target.position);
+
+                return Status.Running;
             }
 
             SetWalking(true);
+
             return Status.Running;
         }
 
         public override void Abort()
         {
             SetWalking(false);
+            SetRunning(false);
+
+            navMeshAgent.SetDestination(GetShortNode(target).transform.position);
         }
 
         private void SetWalking(bool walking)
@@ -71,6 +109,25 @@ namespace UniBT.Examples.Scripts.Behavior
             }
 
             navMeshAgent.isStopped = !running;
+        }
+
+        private GameObject GetShortNode(Transform target)
+        {
+            if (target.childCount == 2)
+            {
+                return Vector3.Distance(navMeshAgent.transform.position, target.GetChild(0).position) 
+                    < Vector3.Distance(navMeshAgent.transform.position, target.GetChild(1).position) ? target.GetChild(0).gameObject : target.GetChild(1).gameObject;
+            }
+           
+            GameObject min = target.GetChild(0).gameObject;
+            for (int i = 1; i < target.childCount; i++)
+            {
+                float temp = Vector3.Distance(navMeshAgent.transform.position, target.GetChild(i).position);
+                if (temp < Vector3.Distance(navMeshAgent.transform.position, min.transform.position))
+                    min = target.GetChild(i).gameObject;
+            }
+
+            return min;
         }
 
         private bool IsDone => !navMeshAgent.pathPending &&
