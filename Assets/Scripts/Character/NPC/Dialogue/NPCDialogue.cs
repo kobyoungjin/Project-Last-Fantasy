@@ -34,6 +34,6 @@ public class NPCDialogue : MonoBehaviour
     {
         DialogueCamera dialogueCameraScript = FindObjectOfType<DialogueCamera>().GetComponent<DialogueCamera>();
         ChangeCamera(mainCamera, dialogueCamera);
-        dialogueCameraScript.SetObject(obj);
+        dialogueCameraScript.SetDiaLogTargetObject(obj);
     }
 }

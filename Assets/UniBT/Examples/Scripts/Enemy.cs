@@ -15,7 +15,7 @@ namespace UniBT.Examples.Scripts
         private Rigidbody rigid;
         
         private NavMeshAgent navMeshAgent;
-
+        
         private void Awake()
         {
             rigid = GetComponent<Rigidbody>();

@@ -20,7 +20,7 @@ public class DialogueCamera : MonoBehaviour
         transform.LookAt(TargetObj.transform);
     }
 
-    public void SetObject(Transform obj)
+    public void SetDiaLogTargetObject(Transform obj)
     {
         TargetObj = obj.gameObject;
     }

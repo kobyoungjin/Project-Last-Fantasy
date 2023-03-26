@@ -21,7 +21,7 @@ namespace UniBT.Examples.Scripts.Behavior
 
         private NavMeshAgent navMeshAgent;
 
-        private bool isItInitPos = true;
+        private bool isNotPos = false;
         public override void Awake()
         {
             navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
@@ -35,11 +35,12 @@ namespace UniBT.Examples.Scripts.Behavior
             navMeshAgent.speed = speed;
             navMeshAgent.stoppingDistance = stoppingDistance;
 
-            Debug.Log(target.GetChild(index));
-            Debug.Log(isItInitPos);
+            //Debug.Log(target.GetChild(index));
+            //Debug.Log(isNotPos);
+            //Debug.Log(Vector3.Distance(target.GetChild(index).position, navMeshAgent.transform.position));
             if (Vector3.Distance(target.GetChild(index).position, navMeshAgent.transform.position) > 20)
             {
-                isItInitPos = false;
+                isNotPos = true;
 
                 SetWalking(false);
                 SetRunning(true);
@@ -49,12 +50,11 @@ namespace UniBT.Examples.Scripts.Behavior
             }
             else
                 navMeshAgent.SetDestination(target.GetChild(index).position);
-                         
-            
+               
             
             if (IsDone) // 목표에 도착했을때
             {
-                isItInitPos = true;
+                isNotPos = false;
                 SetWalking(false);
                 SetRunning(false);
 
@@ -67,10 +67,8 @@ namespace UniBT.Examples.Scripts.Behavior
                 return Status.Running;
             }
 
-            if (target.CompareTag("Player"))
+            if (target.CompareTag("Player") && isNotPos)
             {
-                if (!isItInitPos) return Status.Running;
-
                 SetWalking(false);
                 SetRunning(true);
                 navMeshAgent.SetDestination(target.position);

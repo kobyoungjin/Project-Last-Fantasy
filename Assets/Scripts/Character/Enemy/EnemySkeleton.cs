@@ -12,7 +12,6 @@ namespace FSM
         Vector3 startPos;
 
         SphereCollider sphereCollider;
-
         private GameObject player;
         private Animator animator;
         private float maxDistanceToCheck = 6.0f;

@@ -11,6 +11,7 @@ namespace FSM
         private InputManager inputManager;
         private RaycastHit click;
         private Animator animator;
+        private GameManager gameManager;
 
         Vector3 destination;
 
@@ -39,8 +40,8 @@ namespace FSM
             animator = GetComponent<Animator>();
             inputManager = GetComponent<InputManager>();
 
-            // gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
-
+            gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+            gameManager.SetText(this.gameObject);
             Enter();
         }
 
