@@ -42,7 +42,8 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         textObj.AddComponent<TextMeshProUGUI>();
         textObj.GetComponent<TextMeshProUGUI>().text = obj.name;
         RectTransform rectTrans = textObj.GetComponent<RectTransform>();
-        rectTrans.sizeDelta = new Vector2(obj.name.Length * 18, 40);
+        rectTrans.sizeDelta = new Vector2(obj.name.Length * 20, 40);
+        if(obj.name.Length < 6) rectTrans.sizeDelta = new Vector2(obj.name.Length * 30, 40);
         textObj.GetComponent<TextMeshProUGUI>().fontSize = 36;
         textObj.GetComponent<TextMeshProUGUI>().color = Color.black;
         textObj.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Midline;

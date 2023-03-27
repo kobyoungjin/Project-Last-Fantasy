@@ -115,7 +115,12 @@ namespace FSM
             destination = pos;
         }
 
-        public Vector3 GetPosition()
+        public float GetDistance(Vector3 targetPos)
+        {
+            return Vector3.Distance(this.transform.position, targetPos);
+
+        }
+        public Vector3 GetTargetPosition()
         {
             return destination;
         }

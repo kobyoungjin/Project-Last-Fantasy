@@ -7,7 +7,7 @@ public class NPC : MonoBehaviour
     Renderer renderer;
     Shader shader;
     GameManager gameManager;
-
+    bool isExit = false;
     void Start()
     {
         renderer = GetComponentInChildren<Renderer>();
@@ -23,9 +23,23 @@ public class NPC : MonoBehaviour
 
     }
 
-    private void OnMouseExit()
-    {
-        renderer.sharedMaterial.SetFloat("_OutLineWidth", 0.001f);
-    }
+//    private void OnMouseExit()
+//    {
+//        isExit = true;
+//    }
 
+//    private void OnMouseEnter()
+//    {
+//        isExit = false;
+//    }
+
+//    public bool GetMouseExit()
+//    {
+//        return isExit;
+//    }
+
+//    public void SetMouseExit(bool act)
+//    {
+//        isExit = act;
+//    }
 }

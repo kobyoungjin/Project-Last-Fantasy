@@ -36,6 +36,13 @@ namespace FSM
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
                     player.SetPosition(click.point);
+
+                    float distance = player.GetDistance(click.point);
+                    if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.1f)
+                    {
+                        return;
+                    }
+                                        
                     player.ChangeState(PlayerState.running);
                 }
             }
@@ -93,6 +100,11 @@ namespace FSM
                 // 클릭을하면 위치 세팅
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
+                    if(click.transform.gameObject.CompareTag("NPC"))
+                    {
+
+                    }
+
                     player.SetPosition(click.point);
                     player.ChangeState(PlayerState.running);
                 }
@@ -153,6 +165,11 @@ namespace FSM
 
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
+                    if (click.transform.gameObject.CompareTag("NPC"))
+                    {
+
+                    }
+
                     player.SetPosition(click.point);
                 }
             }
@@ -171,7 +188,7 @@ namespace FSM
 
         public override void PhysicsExcute()
         {
-            Vector3 pos = player.GetPosition() - player.transform.position;
+            Vector3 pos = player.GetTargetPosition() - player.transform.position;
             pos.y = 0f;
 
             if (pos.magnitude <= 0.1f)
@@ -226,6 +243,11 @@ namespace FSM
 
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
+                    if (click.transform.gameObject.CompareTag("NPC"))
+                    {
+
+                    }
+
                     player.SetPosition(click.point);
                     player.ChangeState(PlayerState.running);
                 }

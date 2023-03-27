@@ -217,7 +217,6 @@ namespace FSM
                 navMeshAgent.destination = gameObjects[nextPoint].position;
                 navMeshAgent.isStopped = false;
             }
-
         }
 
         public void Stop()
