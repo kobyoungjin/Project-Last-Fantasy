@@ -14,7 +14,7 @@ public class NPC : MonoBehaviour
         renderer.sharedMaterial.SetFloat("_OutLineWidth", 0.001f);
         gameManager = GameObject.FindObjectOfType<GameManager>().GetComponent<GameManager>();
 
-        gameManager.SetText(this.gameObject);
+        //gameManager.SetText(this.gameObject);
     }
 
     // Update is called once per frame

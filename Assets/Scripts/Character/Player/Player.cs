@@ -41,7 +41,7 @@ namespace FSM
             inputManager = GetComponent<InputManager>();
 
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
-            gameManager.SetText(this.gameObject);
+            //gameManager.SetText(this.gameObject);
             Enter();
         }
 
