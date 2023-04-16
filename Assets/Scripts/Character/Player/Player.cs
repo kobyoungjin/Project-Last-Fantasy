@@ -18,6 +18,7 @@ namespace FSM
         float speed = 4.0f;
         int hp;
         int mp;
+        private bool isMove;
 
         public StateMachine<Player> currentFSM;
         public BaseState<Player>[] arrState = new BaseState<Player>[(int)PlayerState.end];
@@ -113,6 +114,7 @@ namespace FSM
         public void SetPosition(Vector3 pos)
         {
             destination = pos;
+            isMove = true; 
         }
 
         public float GetDistance(Vector3 targetPos)
@@ -173,6 +175,16 @@ namespace FSM
         public void SetMP(int mp)
         {
             this.mp = mp;
+        }
+
+        public bool GetIsMove()
+        {
+            return isMove;
+        }
+
+        public void SetIsMove(bool isMove)
+        {
+            this.isMove = isMove;
         }
     }        
 }

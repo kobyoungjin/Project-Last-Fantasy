@@ -188,14 +188,18 @@ namespace FSM
 
         public override void PhysicsExcute()
         {
-            Vector3 pos = player.GetTargetPosition() - player.transform.position;
-            pos.y = 0f;
-
-            if (pos.magnitude <= 0.1f)
+            if(player.GetIsMove())
             {
-                player.ChangeState(PlayerState.combatIdle);
-                return;
+                if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
+                {
+                    player.SetIsMove(false);
+                    player.ChangeState(PlayerState.combatIdle);
+                    return;
+                }
             }
+
+            var pos = player.GetTargetPosition() - player.transform.position;
+            pos.y = 0f;
 
             // 지정된 위치까지 이동
             var rotate = Quaternion.LookRotation(pos);

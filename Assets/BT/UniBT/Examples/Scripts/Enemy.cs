@@ -22,6 +22,12 @@ namespace UniBT.Examples.Scripts
             navMeshAgent = GetComponent<NavMeshAgent>();
         }
 
+        private void FixedUpdate()
+        {
+            rigid.velocity = Vector3.zero;
+            rigid.angularVelocity = Vector3.zero;
+        }
+
         private void Update()
         {
             var distance = Vector3.Distance(transform.position, player.position);

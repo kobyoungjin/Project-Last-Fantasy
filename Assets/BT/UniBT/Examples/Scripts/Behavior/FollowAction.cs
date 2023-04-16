@@ -7,24 +7,36 @@ namespace UniBT.Examples.Scripts.Behavior
     {
         private static readonly int Walking = Animator.StringToHash("Walking");
         private static readonly int Running = Animator.StringToHash("Running");
-        
-        [SerializeField] 
-        private Transform target;
-        int index = 0;
-        [SerializeField] 
-        private float speed;
 
-        [SerializeField] 
+        [SerializeField]
+        private Transform target;
+        private Transform preTarget = null;
+        int index = 0;
+        [SerializeField]
+        private float speed;
+        private float distance;
+        [SerializeField]
         private float stoppingDistance;
 
         private Animator animator;
-
         private NavMeshAgent navMeshAgent;
-        
+        private Enemy enemy;
+
+        private bool isComplete = false;
+        private bool isGoal = true;
+
         public override void Awake()
         {
+            enemy = gameObject.GetComponent<Enemy>();
             navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
             animator = gameObject.GetComponent<Animator>();
+            navMeshAgent.enabled = false;
+        }
+
+        public override void Start()
+        {
+            navMeshAgent.enabled = true;
+            SetWalking(true);
         }
 
         protected override Status OnUpdate()
@@ -33,22 +45,39 @@ namespace UniBT.Examples.Scripts.Behavior
             navMeshAgent.isStopped = false;
             navMeshAgent.speed = speed;
             navMeshAgent.stoppingDistance = stoppingDistance;
-
-            Debug.Log("목표: "+ target.GetChild(index));
-            Debug.Log("목표 도착: " + IsDone);
-            //Debug.Log("목표 거리: "+ Vector3.Distance(target.GetChild(index).position, navMeshAgent.transform.position));
-            //if (Vector3.Distance(target.GetChild(index).position, navMeshAgent.transform.position) > 20)
-            //{
-            //    SetWalking(false);
-            //    SetRunning(true);
-            //    navMeshAgent.SetDestination(target.GetChild(index).position);
-
-            //    return Status.Running;
-            //}
-            //else
-                navMeshAgent.SetDestination(target.GetChild(index).position);
-               
             
+            if (preTarget != null) Debug.Log("이전목표: " + preTarget.gameObject.name);
+            Debug.Log("목표: " + target.gameObject.name);
+            Debug.Log("목표 도착: " + IsDone);
+            if (target.name == "WayPointTransforms")
+            {
+                target = target.GetChild(index);
+            }
+
+            if (preTarget != null && preTarget.CompareTag("WayPoint"))
+            {
+                //Debug.Log("순회 목표 거리: " + (int)distance);
+                distance = Vector3.Distance(preTarget.position, navMeshAgent.transform.position);
+                if (distance <= 1.5f && !isComplete)
+                {
+                    isComplete = true;
+                    isGoal = true;
+                    return Status.Success;
+                }
+                else if (distance >= 15f)
+                {
+                    GameObject wayPoint = GameObject.FindGameObjectWithTag("WayPoint");
+                    target = GetShortNode(wayPoint.transform).transform;
+                    SetWalking(false);
+                    SetRunning(true);
+                    isComplete = false;
+                }
+                isComplete = true;
+                
+            }
+
+            navMeshAgent.SetDestination(target.position);
+
             if (IsDone) // 목표에 도착했을때
             {
                 SetWalking(false);
@@ -56,24 +85,37 @@ namespace UniBT.Examples.Scripts.Behavior
 
                 if (target.CompareTag("Player"))
                 {
+                    navMeshAgent.isStopped = true;
                     return Status.Success;
                 }
-                   
+
                 ++index;
-                index = index % target.childCount;
-                navMeshAgent.SetDestination(target.GetChild(index).position);
+                index = index % target.parent.childCount;
+                ChangeTarget((target));
+                target = target.parent.GetChild(index);
+                //navMeshAgent.SetDestination(target.position);
                 return Status.Running;
             }
+
+            
+            //if (!isComplete) return Status.Running;
 
             if (target.CompareTag("Player"))
             {
+                if(isGoal)
+                {
+                    GameObject wayPoint = GameObject.FindGameObjectWithTag("WayPoint");
+                    preTarget = GetShortNode(wayPoint.transform).transform;
+                    isGoal = false;
+                }
+
                 SetWalking(false);
                 SetRunning(true);
-                navMeshAgent.SetDestination(target.position);
+                //navMeshAgent.SetDestination(target.position);
 
                 return Status.Running;
             }
-
+            
             SetWalking(true);
 
             return Status.Running;
@@ -83,8 +125,6 @@ namespace UniBT.Examples.Scripts.Behavior
         {
             SetWalking(false);
             SetRunning(false);
-
-            navMeshAgent.SetDestination(GetShortNode(target).transform.position);
         }
 
         private void SetWalking(bool walking)
@@ -111,10 +151,10 @@ namespace UniBT.Examples.Scripts.Behavior
         {
             if (target.childCount == 2)
             {
-                return Vector3.Distance(navMeshAgent.transform.position, target.GetChild(0).position) 
+                return Vector3.Distance(navMeshAgent.transform.position, target.GetChild(0).position)
                     < Vector3.Distance(navMeshAgent.transform.position, target.GetChild(1).position) ? target.GetChild(0).gameObject : target.GetChild(1).gameObject;
             }
-           
+
             GameObject min = target.GetChild(0).gameObject;
             for (int i = 1; i < target.childCount; i++)
             {
@@ -124,6 +164,12 @@ namespace UniBT.Examples.Scripts.Behavior
             }
 
             return min;
+        }
+
+        private void ChangeTarget(Transform currentTarget)
+        {
+            preTarget = target;
+            target = currentTarget;
         }
 
         private bool IsDone => !navMeshAgent.pathPending &&

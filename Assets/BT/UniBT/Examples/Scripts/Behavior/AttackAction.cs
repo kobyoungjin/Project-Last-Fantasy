@@ -16,23 +16,17 @@ namespace UniBT.Examples.Scripts.Behavior
         private Animator animator;
         private bool triggered = false;
 
-        private NavMeshAgent navMeshAgent;
-
         public override void Awake()
         {
             enemy = gameObject.GetComponent<Enemy>();
-            navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
             animator = gameObject.GetComponent<Animator>();
         }
-        
+
         protected override Status OnUpdate()
         {
-           navMeshAgent.enabled = true;
-           navMeshAgent.isStopped = false;
-
             float distance = Vector3.Distance(enemy.transform.position, target.position);
-
-            if (distance > 1.3f)
+            //Mathf.Approximately(
+            if (distance > 3.0f)
             {
                 SetAttacking(false);
                 return Status.Success;
@@ -69,8 +63,6 @@ namespace UniBT.Examples.Scripts.Behavior
             {
                 animator.SetBool(AttackAnim, attacking);
             }
-
-            //navMeshAgent.isStopped = attacking;
         }
 
     }
