@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace UniBT.Examples.Scripts.Behavior
 {
@@ -24,14 +23,13 @@ namespace UniBT.Examples.Scripts.Behavior
 
         protected override Status OnUpdate()
         {
-            float distance = Vector3.Distance(enemy.transform.position, target.position);
-            //Mathf.Approximately(
-            if (distance > 3.0f)
+            if (enemy.step != Enemy.STEP.ATTACK)
             {
                 SetAttacking(false);
-                return Status.Success;
+                return Status.Failure;
             }
-
+            //Debug.Log(triggered);
+            
             if (triggered)
             {
                 if (enemy.Attacking)

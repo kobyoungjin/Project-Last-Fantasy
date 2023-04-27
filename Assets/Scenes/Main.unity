@@ -380,7 +380,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 95
   m_IsActive: 1
 --- !u!65 &893069403
 BoxCollider:
@@ -551,7 +551,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -646,7 +646,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1615691172
 GameObject:
@@ -3306,7 +3306,6 @@ GameObject:
   - component: {fileID: 6864232200194812210}
   - component: {fileID: 209798540680325619}
   - component: {fileID: 209798540680325622}
-  - component: {fileID: 209798540680325621}
   - component: {fileID: 209798540680325623}
   - component: {fileID: 209798540680325624}
   - component: {fileID: 209798540680325625}
@@ -3334,24 +3333,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &209798540680325621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209798540680325618}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e212772f099f3b443aa11319b929c9f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentState: 0
-  prevState: 0
-  navMeshAgent: {fileID: 209798540680325622}
-  wayPoints: []
-  nextPoint: 0
-  isDie: 0
 --- !u!195 &209798540680325622
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3396,8 +3377,8 @@ MonoBehaviour:
       data:
         graphPosition:
           serializedVersion: 2
-          x: -374
-          y: 250
+          x: -557
+          y: 146
           width: 73
           height: 77
         description: 
@@ -3408,11 +3389,11 @@ MonoBehaviour:
       data:
         graphPosition:
           serializedVersion: 2
-          x: -287
-          y: 244
+          x: -445
+          y: 146
           width: 180
           height: 165
-        description: gesgs
+        description: 
         children:
         - id: 2
         - id: 3
@@ -3423,11 +3404,11 @@ MonoBehaviour:
       data:
         graphPosition:
           serializedVersion: 2
-          x: 80
-          y: 147
+          x: -196
+          y: -242
           width: 180
           height: 141
-        description: 
+        description: "\uACF5\uACA9 \uB8E8\uD2B8"
         children:
         - id: 5
         - id: 6
@@ -3437,252 +3418,173 @@ MonoBehaviour:
       data:
         graphPosition:
           serializedVersion: 2
-          x: -44
-          y: 452
+          x: -196
+          y: 37
           width: 180
-          height: 117
+          height: 141
         description: 
         children:
         - id: 7
+        - id: 8
         abortOnConditionChanged: 1
     00000004:
-      type: {class: Sequence, ns: UniBT, asm: UniBT}
+      type: {class: PatrollAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
       data:
         graphPosition:
           serializedVersion: 2
-          x: -44
-          y: 716
-          width: 180
-          height: 141
-        description: 
-        children:
-        - id: 8
-        - id: 9
-        abortOnConditionChanged: 1
-    00000005:
-      type: {class: Selector, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 321
-          y: 103
-          width: 180
-          height: 141
-        description: 
-        children:
-        - id: 10
-        - id: 11
-        abortOnConditionChanged: 1
-    00000006:
-      type: {class: All, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 321
-          y: 362
-          width: 136
-          height: 122
-        description: 
-        children:
-        - id: 12
-        - id: 13
-    00000007:
-      type: {class: FollowAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 172
-          y: 497
+          x: -196
+          y: 374
           width: 379
           height: 160
         description: 
         target: {fileID: 855944255}
         speed: 1
         stoppingDistance: 0.5
-    00000008:
-      type: {class: LookAtAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
+    00000005:
+      type: {class: Selector, ns: UniBT, asm: UniBT}
       data:
         graphPosition:
           serializedVersion: 2
-          x: 181
-          y: 667
-          width: 379
-          height: 137
-        description: 
-        useLerp: 0
-        target: {fileID: 855944255}
-    00000009:
-      type: {class: Sequence, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 181
-          y: 817
+          x: 119
+          y: -383
           width: 180
           height: 141
         description: 
         children:
-        - id: 14
-        - id: 15
+        - id: 9
+        - id: 10
         abortOnConditionChanged: 1
-    0000000A:
+    00000006:
+      type: {class: Random, ns: UniBT, asm: UniBT}
+      data:
+        graphPosition:
+          serializedVersion: 2
+          x: 119
+          y: -202
+          width: 136
+          height: 146
+        description: 
+        children:
+        - id: 11
+        - id: 12
+        - id: 13
+    00000007:
+      type: {class: IsHateGt, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
+      data:
+        graphPosition:
+          serializedVersion: 2
+          x: 119
+          y: -11
+          width: 187
+          height: 138
+        description: 
+        dontReEvaluateOnRunning: 1
+        child:
+          id: 14
+        threshold: 10
+    00000008:
+      type: {class: All, ns: UniBT, asm: UniBT}
+      data:
+        graphPosition:
+          serializedVersion: 2
+          x: 119
+          y: 145
+          width: 136
+          height: 122
+        description: 
+        children:
+        - id: 15
+        - id: 16
+    00000009:
       type: {class: IsAttacking, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
       data:
         graphPosition:
           serializedVersion: 2
-          x: 569
-          y: 75
+          x: 406
+          y: -613
           width: 180
           height: 117
         description: 
         dontReEvaluateOnRunning: 0
         child:
-          id: 16
-    0000000B:
+          id: 14
+    0000000A:
       type: {class: IsHateGt, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
       data:
         graphPosition:
           serializedVersion: 2
-          x: 562
-          y: 210
-          width: 187
-          height: 138
-        description: 
-        dontReEvaluateOnRunning: 0
-        child:
-          id: 16
-        threshold: 10
-    0000000C:
-      type: {class: LookAtAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 765
-          y: 315
-          width: 302
-          height: 137
-        description: 
-        useLerp: 1
-        target: {fileID: 6102168432542863572}
-    0000000D:
-      type: {class: Sequence, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 569
-          y: 409
-          width: 180
-          height: 141
-        description: 
-        children:
-        - id: 17
-        - id: 18
-        abortOnConditionChanged: 1
-    0000000E:
-      type: {class: FollowAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 408
-          y: 817
-          width: 379
-          height: 160
-        description: 
-        target: {fileID: 855944255}
-        speed: 4
-        stoppingDistance: 1.5
-    0000000F:
-      type: {class: IsHateGt, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 421
-          y: 1000
+          x: 406
+          y: -474
           width: 189
           height: 138
         description: 
         dontReEvaluateOnRunning: 0
         child:
-          id: 16
-        threshold: 30
-    00000010:
-      type: {class: , ns: , asm: }
-    00000011:
-      type: {class: FollowAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 963
-          y: 497
-          width: 302
-          height: 160
-        description: 
-        target: {fileID: 6102168432542863572}
-        speed: 4
-        stoppingDistance: 1.5
-    00000012:
-      type: {class: Rotator, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 749
-          y: 676
-          width: 180
-          height: 141
-        description: 
-        children:
-        - id: 19
-        - id: 20
-        resetOnAbort: 0
-    00000013:
+          id: 14
+        threshold: 1.5
+    0000000B:
       type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
       data:
         graphPosition:
           serializedVersion: 2
-          x: 1081
-          y: 678
-          width: 302
-          height: 139
-        description: 
-        force: 4
-        target: {fileID: 6102168432542863572}
-    00000014:
-      type: {class: Random, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 982
-          y: 837
-          width: 136
-          height: 122
-        description: 
-        children:
-        - id: 21
-        - id: 22
-    00000015:
-      type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 1192
-          y: 836
+          x: 632
+          y: -355
           width: 302
           height: 139
         description: 
         force: 7
         target: {fileID: 6102168432542863572}
-    00000016:
+    0000000C:
       type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
       data:
         graphPosition:
           serializedVersion: 2
-          x: 1192
-          y: 978
+          x: 632
+          y: -202
           width: 302
           height: 139
         description: 
         force: 12
         target: {fileID: 6102168432542863572}
+    0000000D:
+      type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
+      data:
+        graphPosition:
+          serializedVersion: 2
+          x: 730
+          y: -32
+          width: 302
+          height: 139
+        description: 
+        force: 4
+        target: {fileID: 6102168432542863572}
+    0000000E:
+      type: {class: , ns: , asm: }
+    0000000F:
+      type: {class: LookAtAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
+      data:
+        graphPosition:
+          serializedVersion: 2
+          x: 406
+          y: 77
+          width: 302
+          height: 137
+        description: 
+        useLerp: 1
+        target: {fileID: 6102168432542863572}
+    00000010:
+      type: {class: TraceAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
+      data:
+        graphPosition:
+          serializedVersion: 2
+          x: 406
+          y: 231
+          width: 302
+          height: 160
+        description: 
+        target: {fileID: 6102168432542863572}
+        speed: 1.2
+        stoppingDistance: 1.5
 --- !u!114 &209798540680325624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3696,6 +3598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 6102168432542863572}
+  step: -1
 --- !u!114 &209798540680325625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4104,7 +4007,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 209798540680325618}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 14.44}
+  m_LocalPosition: {x: 0, y: 2, z: 14.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3727432683323111644}
@@ -8237,534 +8140,6 @@ Transform:
   m_Father: {fileID: 8944077669536555320}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5487124169156124804
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5487124169156124827}
-  - component: {fileID: 5487124169156124824}
-  - component: {fileID: 5487124169156124825}
-  - component: {fileID: 5487124169156124826}
-  m_Layer: 0
-  m_Name: Head
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!33 &5487124169156124824
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124169156124804}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &5487124169156124825
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124169156124804}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5487124169156124826
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124169156124804}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!4 &5487124169156124827
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124169156124804}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4, z: 0.7}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 2}
-  m_Children: []
-  m_Father: {fileID: 5487124170076580362}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &5487124170076580362
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_Children:
-  - {fileID: 5487124169156124827}
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5487124170076580363
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!195 &5487124170076580464
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 1
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &5487124170076580465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d9ccc51f7af4a5ebdce75f40b94d9c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
---- !u!1 &5487124170076580466
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5487124170076580362}
-  - component: {fileID: 5487124170076580363}
-  - component: {fileID: 5487124170076580468}
-  - component: {fileID: 5487124170076580469}
-  - component: {fileID: 5487124170076580470}
-  - component: {fileID: 5487124170076580471}
-  - component: {fileID: 5487124170076580464}
-  - component: {fileID: 5487124170076580465}
-  m_Layer: 0
-  m_Name: Enemy2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!23 &5487124170076580468
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5487124170076580469
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5487124170076580470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbdc14eea9651417792898b3298a5cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  root:
-    id: 0
-  updateType: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: Root, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: -234
-          y: 236
-          width: 73
-          height: 77
-        description: 
-        child:
-          id: 1
-    00000001:
-      type: {class: Selector, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: -134
-          y: 235
-          width: 178
-          height: 162
-        description: gesgs
-        children:
-        - id: 2
-        - id: 3
-        - id: 4
-        abortOnConditionChanged: 1
-    00000002:
-      type: {class: Sequence, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 80
-          y: 147
-          width: 178
-          height: 138
-        description: 
-        children:
-        - id: 5
-        - id: 6
-        abortOnConditionChanged: 1
-    00000003:
-      type: {class: IsHateGt, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 89
-          y: 467
-          width: 178
-          height: 133
-        description: 
-        dontReEvaluateOnRunning: 0
-        child:
-          id: 7
-        threshold: 5
-    00000004:
-      type: {class: Sequence, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 86
-          y: 766
-          width: 178
-          height: 138
-        description: 
-        children:
-        - id: 8
-        - id: 9
-        abortOnConditionChanged: 1
-    00000005:
-      type: {class: Selector, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 321
-          y: 103
-          width: 178
-          height: 138
-        description: 
-        children:
-        - id: 10
-        - id: 11
-        abortOnConditionChanged: 1
-    00000006:
-      type: {class: All, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 345
-          y: 365
-          width: 135
-          height: 120
-        description: 
-        children:
-        - id: 12
-        - id: 13
-    00000007:
-      type: {class: LookAtAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 282
-          y: 615
-          width: 300
-          height: 134
-        description: 
-        useLerp: 1
-        target: {fileID: 0}
-    00000008:
-      type: {class: FollowAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 305
-          y: 764
-          width: 363
-          height: 154
-        description: 
-        target: {fileID: 0}
-        speed: 1
-        stoppingDistance: 0.5
-    00000009:
-      type: {class: ScaleAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 304
-          y: 952
-          width: 113
-          height: 96
-        description: 
-    0000000A:
-      type: {class: IsAttacking, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 569
-          y: 75
-          width: 178
-          height: 114
-        description: 
-        dontReEvaluateOnRunning: 0
-        child:
-          id: 14
-    0000000B:
-      type: {class: IsHateGt, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 562
-          y: 210
-          width: 185
-          height: 133
-        description: 
-        dontReEvaluateOnRunning: 0
-        child:
-          id: 14
-        threshold: 10
-    0000000C:
-      type: {class: LookAtAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 581
-          y: 358
-          width: 300
-          height: 134
-        description: 
-        useLerp: 1
-        target: {fileID: 0}
-    0000000D:
-      type: {class: Sequence, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 581
-          y: 538
-          width: 178
-          height: 138
-        description: 
-        children:
-        - id: 15
-        - id: 16
-        abortOnConditionChanged: 1
-    0000000E:
-      type: {class: , ns: , asm: }
-    0000000F:
-      type: {class: FollowAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 963
-          y: 497
-          width: 300
-          height: 154
-        description: 
-        target: {fileID: 0}
-        speed: 2
-        stoppingDistance: 1.5
-    00000010:
-      type: {class: Rotator, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 783
-          y: 684
-          width: 178
-          height: 138
-        description: 
-        children:
-        - id: 17
-        - id: 18
-        resetOnAbort: 0
-    00000011:
-      type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 1050
-          y: 697
-          width: 178
-          height: 115
-        description: 
-        force: 4
-        target: {fileID: 0}
-    00000012:
-      type: {class: Random, ns: UniBT, asm: UniBT}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 949
-          y: 838
-          width: 135
-          height: 120
-        description: 
-        children:
-        - id: 19
-        - id: 20
-    00000013:
-      type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 1192
-          y: 837
-          width: 178
-          height: 115
-        description: 
-        force: 7
-        target: {fileID: 0}
-    00000014:
-      type: {class: AttackAction, ns: UniBT.Examples.Scripts.Behavior, asm: Example}
-      data:
-        graphPosition:
-          serializedVersion: 2
-          x: 1142
-          y: 980
-          width: 185
-          height: 115
-        description: 
-        force: 12
-        target: {fileID: 0}
---- !u!54 &5487124170076580471
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5487124170076580466}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 80
-  m_CollisionDetection: 0
 --- !u!4 &5500331974644901963
 Transform:
   m_ObjectHideFlags: 0

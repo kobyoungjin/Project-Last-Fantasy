@@ -6,7 +6,7 @@ namespace UniBT.Examples.Scripts.Behavior
     {
         
         [SerializeField] 
-        private float threshold = 10;  // 기준점
+        private float threshold;  // 기준점
         
         private Enemy enemy;
         
@@ -17,7 +17,7 @@ namespace UniBT.Examples.Scripts.Behavior
 
         protected override bool IsUpdatable()  // 
         {
-            return enemy.Hate > threshold;
+            return enemy.Distance < threshold;
         }
     }
 }

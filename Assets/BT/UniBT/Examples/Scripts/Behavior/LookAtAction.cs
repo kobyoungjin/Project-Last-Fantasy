@@ -11,10 +11,12 @@ namespace UniBT.Examples.Scripts.Behavior
         private Transform target;
 
         private Transform transform;
+        private Animator animator;
 
         public override void Awake()
         {
             transform = gameObject.transform;
+            animator = gameObject.GetComponent<Animator>();
         }
 
         protected override Status OnUpdate()
@@ -28,11 +30,16 @@ namespace UniBT.Examples.Scripts.Behavior
                 {
                     return Status.Success;
                 }
-                transform.rotation = Quaternion.Slerp(transform.rotation, goal, Time.deltaTime * 2); // 회전
+                transform.rotation = Quaternion.Slerp(transform.rotation, goal, Time.deltaTime * 4); // 회전
                 return Status.Running;
             }
-            
-            transform.LookAt(target);  // 타켓이 쳐다보게
+
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
+                animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            {
+                transform.LookAt(target);  // 타켓이 쳐다보게
+            }
+                
             return Status.Running;
 
         }

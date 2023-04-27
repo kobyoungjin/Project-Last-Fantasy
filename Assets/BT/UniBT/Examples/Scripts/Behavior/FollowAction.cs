@@ -54,27 +54,39 @@ namespace UniBT.Examples.Scripts.Behavior
                 target = target.GetChild(index);
             }
 
-            if (preTarget != null && preTarget.CompareTag("WayPoint"))
+            
+
+            if(animator.GetCurrentAnimatorStateInfo(0).IsName("Running"))
             {
-                //Debug.Log("순회 목표 거리: " + (int)distance);
-                distance = Vector3.Distance(preTarget.position, navMeshAgent.transform.position);
-                if (distance <= 1.5f && !isComplete)
-                {
-                    isComplete = true;
-                    isGoal = true;
-                    return Status.Success;
-                }
-                else if (distance >= 15f)
-                {
-                    GameObject wayPoint = GameObject.FindGameObjectWithTag("WayPoint");
-                    target = GetShortNode(wayPoint.transform).transform;
-                    SetWalking(false);
-                    SetRunning(true);
-                    isComplete = false;
-                }
-                isComplete = true;
-                
+                navMeshAgent.speed = 2.0f;
+
+           
             }
+
+            //if (preTarget != null && preTarget.CompareTag("WayPoint"))
+            //{
+                //Debug.Log("순회 목표 거리: " + (int)distance);
+                //distance = Vector3.Distance(preTarget.position, navMeshAgent.transform.position);
+                //if (distance <= 1.5f && !isComplete)
+                //{
+                //    isComplete = true;
+                //    isGoal = true;
+                //    return Status.Success;
+                //}
+                //if (distance >= 15f)
+                //{
+                //    GameObject wayPoint = GameObject.FindGameObjectWithTag("WayPoint");
+                //    preTarget = target;
+                //    target = GetShortNode(wayPoint.transform).transform;
+                //    //SetWalking(true);
+                //    //SetRunning(true);
+                //    //isComplete = false;
+                //    //speed = 4;
+                //    return Status.Running;
+                //}
+                //isComplete = true;
+
+            //}           
 
             navMeshAgent.SetDestination(target.position);
 
@@ -91,10 +103,11 @@ namespace UniBT.Examples.Scripts.Behavior
 
                 ++index;
                 index = index % target.parent.childCount;
-                ChangeTarget((target));
+                preTarget = target;
                 target = target.parent.GetChild(index);
                 //navMeshAgent.SetDestination(target.position);
-                return Status.Running;
+                SetWalking(true);
+                return Status.Success;
             }
 
             
@@ -115,9 +128,8 @@ namespace UniBT.Examples.Scripts.Behavior
 
                 return Status.Running;
             }
-            
-            SetWalking(true);
 
+            SetWalking(true);
             return Status.Running;
         }
 
@@ -166,11 +178,6 @@ namespace UniBT.Examples.Scripts.Behavior
             return min;
         }
 
-        private void ChangeTarget(Transform currentTarget)
-        {
-            preTarget = target;
-            target = currentTarget;
-        }
 
         private bool IsDone => !navMeshAgent.pathPending &&
                                (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance ||
