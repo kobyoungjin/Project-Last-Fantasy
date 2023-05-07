@@ -12,7 +12,6 @@ namespace UniBT.Examples.Scripts.Behavior
         int index = 0;
         [SerializeField]
         private float speed;
-        private float distance;
         [SerializeField]
         private float stoppingDistance;
 
