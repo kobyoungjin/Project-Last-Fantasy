@@ -15,6 +15,9 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityTransform
         [Tooltip("Vector specifying the upward direction")]
         public Vector3 worldUp;
 
+        [Tooltip("Angular speed of the enemy")]
+        public SharedFloat angularSpeed;
+
         private Transform targetTransform;
         private GameObject prevGameObject;
 
@@ -34,11 +37,20 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityTransform
                 return TaskStatus.Failure;
             }
 
-            if (targetLookAt.Value != null) {
-                targetTransform.LookAt(targetLookAt.Value.transform);
-            } else {
+            if (targetLookAt.Value != null)
+            {
+                //targetTransform.LookAt(targetLookAt.Value.transform);
+                var lookRotation = targetLookAt.Value.transform.position - transform.position;
+                var lookAt = Quaternion.LookRotation(lookRotation.normalized);
+                targetTransform.rotation = Quaternion.Slerp(transform.rotation, lookAt, angularSpeed.Value * Time.deltaTime);
+            }
+            else
+            {
                 targetTransform.LookAt(worldPosition.Value, worldUp);
             }
+
+            
+
 
             return TaskStatus.Success;
         }

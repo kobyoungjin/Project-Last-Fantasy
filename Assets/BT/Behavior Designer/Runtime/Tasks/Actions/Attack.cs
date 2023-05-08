@@ -16,7 +16,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public SharedGameObject enemy;
         [Tooltip("Attack ing?")]
         public SharedBool attacking;
-
+        
         private bool triggered = false;
 
         public override void OnAwake()
@@ -26,16 +26,16 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override TaskStatus OnUpdate()
         {
-            if (triggered)
+            float distance = Vector3.Distance(gameObject.transform.position, enemy.Value.transform.position);
+
+            if (triggered || distance > 1.5f)
             {
-                if (attacking.Value)
-                {
+                 if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
+                    animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f && attacking.Value)
                     return TaskStatus.Running;
-                }
 
                 CancelAttack();
                 triggered = false;
-                animator.SetBool("Attcking", false);
                 return TaskStatus.Success;
             }
 
@@ -48,13 +48,15 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         {
             enemy.Value.GetComponent<NavMeshAgent>().enabled = true;
             //rigid.isKinematic = true;
+            animator.SetBool("Attacking", false);
             attacking = false;
         }
 
         public void OnAttack(SharedInt force)
         {
-            attacking = true;
             enemy.Value.GetComponent<NavMeshAgent>().enabled = false;
+            animator.SetBool("Attacking", true);
+            attacking = true;
             //rigid.isKinematic = false;
             //rigid.AddForce(Vector3.up * force, ForceMode.Impulse);
         }

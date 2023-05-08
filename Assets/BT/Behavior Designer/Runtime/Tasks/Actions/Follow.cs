@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.AI;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
@@ -12,21 +12,19 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
     {
         [Tooltip("The speed of the enemy")]
         public SharedFloat speed;
-        [Tooltip("Angular speed of the enemy")]
-        public SharedFloat angularSpeed;
         [Tooltip("The enemy has arrived when the square magnitude is less than this value")]
         public float stoppingDistance = 0.1f;
-        [Tooltip("The transform that the agent is moving towards")]
-        public SharedTransform targetTransform;
-        [Tooltip("If target is null then use the target position")]
-        public SharedVector3 targetPosition;
+
+        [Tooltip("The GameObject that the task operates on. If null the task GameObject is used.")]
+        public SharedGameObject targetGameObject;
+        private Transform targetTransform;
+        private GameObject prevGameObject;
 
         public SharedFloat distance;
-        // True if the target is a transform
-        private bool dynamicTarget;
         // A cache of the NavMeshAgent
         private NavMeshAgent navMeshAgent;
         private Animator animator;
+        GameObject player;
         public override void OnAwake()
         {
             navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
@@ -35,33 +33,41 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override void OnStart()
         {
-            dynamicTarget = (targetTransform != null && targetTransform.Value != null);
+            var currentGameObject = GetDefaultGameObject(targetGameObject.Value);
+            if (currentGameObject != prevGameObject)
+            {
+                targetTransform = currentGameObject.GetComponent<Transform>();
+                prevGameObject = currentGameObject;
+            }
 
             navMeshAgent.enabled = true;
             navMeshAgent.speed = speed.Value;
-            navMeshAgent.angularSpeed = angularSpeed.Value;            
             navMeshAgent.stoppingDistance = stoppingDistance;
-            navMeshAgent.destination = Target();
+            navMeshAgent.destination = targetTransform.position;
+
+            player = GameObject.FindGameObjectWithTag("Player");
         }
 
         public override TaskStatus OnUpdate()
         {
-            if(distance.Value < 10) return TaskStatus.Failure;
+            distance.Value = Vector3.Distance(transform.position, player.transform.position);
+            Debug.Log(distance.Value);
 
-            if (IsDone) // ¸ñÇ¥¿¡ µµÂøÇßÀ»¶§
+            if (distance.Value <= 10 || targetTransform == null)
             {
-                //animator.SetBool("Walking", false);
+                animator.SetBool("Walking", false);
+                return TaskStatus.Failure;
+            }
+
+            if (IsDone)
+            {
+                animator.SetBool("Walking", false);
                 return TaskStatus.Success;
             }
 
-            navMeshAgent.destination = Target();
+            navMeshAgent.destination = targetTransform.position;
 
             return TaskStatus.Running;
-        }
-
-        private Vector3 Target()
-        {
-            return targetTransform.Value.position;
         }
 
         private bool IsDone => !navMeshAgent.pathPending &&

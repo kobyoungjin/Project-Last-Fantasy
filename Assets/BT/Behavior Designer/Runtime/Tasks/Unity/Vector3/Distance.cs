@@ -17,7 +17,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityVector3
         public override TaskStatus OnUpdate()
         {
             storeResult.Value = Vector3.Distance(firstVector3.Value, secondVector3.Value);
-            return TaskStatus.Failure;
+            return TaskStatus.Success;
         }
 
         public override void OnReset()

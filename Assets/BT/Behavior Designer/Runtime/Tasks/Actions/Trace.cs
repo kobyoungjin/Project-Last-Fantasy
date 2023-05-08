@@ -12,21 +12,18 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
     {
         [Tooltip("The speed of the enemy")]
         public SharedFloat speed;
-        [Tooltip("Angular speed of the enemy")]
-        public SharedFloat angularSpeed;
         [Tooltip("The enemy has arrived when the square magnitude is less than this value")]
-        public float stoppingDistance = 0.1f;
-        [Tooltip("The transform that the agent is moving towards")]
-        public SharedTransform targetTransform;
-        [Tooltip("If target is null then use the target position")]
-        public SharedVector3 targetPosition;
+        public float stoppingDistance = 1.5f;
 
         public SharedFloat distance;
-        // True if the target is a transform
-        private bool dynamicTarget;
         // A cache of the NavMeshAgent
         private NavMeshAgent navMeshAgent;
         private Animator animator;
+
+        [Tooltip("The GameObject that the task operates on. If null the task GameObject is used.")]
+        public SharedGameObject targetGameObject;
+        private Transform targetTransform;
+        private GameObject prevGameObject;
 
         public override void OnAwake()
         {
@@ -36,18 +33,35 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override void OnStart()
         {
-            dynamicTarget = (targetTransform != null && targetTransform.Value != null);
+            var currentGameObject = GetDefaultGameObject(targetGameObject.Value);
+            if (currentGameObject != prevGameObject)
+            {
+                targetTransform = currentGameObject.GetComponent<Transform>();
+                prevGameObject = currentGameObject;
+            }
 
             navMeshAgent.enabled = true;
             navMeshAgent.speed = speed.Value;
-            navMeshAgent.angularSpeed = angularSpeed.Value;
             navMeshAgent.stoppingDistance = stoppingDistance;
-            navMeshAgent.destination = Target();
+            navMeshAgent.destination = targetTransform.position;
         }
 
         public override TaskStatus OnUpdate()
         {
-            if (distance.Value < 5) return TaskStatus.Failure;
+            if (targetTransform == null)
+            {
+                Debug.LogWarning("Transform is null");
+                return TaskStatus.Failure;
+            }
+
+            distance.Value = Vector3.Distance(gameObject.transform.position, targetTransform.transform.position);
+            //Debug.Log(distance.Value);
+
+            if (distance.Value <= stoppingDistance || distance.Value > 10)
+            {
+                animator.SetBool("Running", false);
+                return TaskStatus.Failure;
+            }
 
             if (IsDone) // 목표에 도착했을때
             {
@@ -55,14 +69,9 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
                 return TaskStatus.Success;
             }
 
-            navMeshAgent.destination = Target();
+            navMeshAgent.destination = targetTransform.position;
 
             return TaskStatus.Running;
-        }
-
-        private Vector3 Target()
-        {
-            return targetTransform.Value.position;
         }
 
         private bool IsDone => !navMeshAgent.pathPending &&

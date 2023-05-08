@@ -30,7 +30,7 @@ namespace UniBT.Examples.Scripts.Behavior
                 {
                     return Status.Success;
                 }
-                transform.rotation = Quaternion.Slerp(transform.rotation, goal, Time.deltaTime * 4); // 회전
+                transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, goal, Time.deltaTime * 4); // 회전
                 return Status.Running;
             }
 

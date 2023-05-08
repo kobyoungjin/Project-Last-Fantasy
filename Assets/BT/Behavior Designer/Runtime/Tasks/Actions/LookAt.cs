@@ -1,18 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using BehaviorDesigner.Runtime;
+using BehaviorDesigner.Runtime.Tasks;
 
-public class LookAt : MonoBehaviour
+namespace BehaviorDesigner.Runtime.Tasks.Movement
 {
-    // Start is called before the first frame update
-    void Start()
+    public class LookAt : Action
     {
-        
-    }
+        [Tooltip("target Transform")]
+        public SharedTransform targetTransform;
+        [Tooltip("Angular speed of the enemy")]
+        public SharedFloat angularSpeed;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+
+        public override TaskStatus OnUpdate()
+        {
+            var lookRotation = targetTransform.Value.position - transform.position;
+            
+            var lookAt = Quaternion.LookRotation(lookRotation.normalized);
+
+            //gameObject.transform.LookAt(targetTransform.Value.transform);
+
+            //if (Quaternion.Angle(lookAt, transform.rotation) >= 5.0f)  // 앵글각이 5보다 작으면 ok
+            //{
+            //    return TaskStatus.Running;
+            //}
+
+            if (lookRotation != Vector3.zero)
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, angularSpeed.Value * Time.deltaTime);
+       
+           
+            return TaskStatus.Success;
+        }
     }
 }
+
+
