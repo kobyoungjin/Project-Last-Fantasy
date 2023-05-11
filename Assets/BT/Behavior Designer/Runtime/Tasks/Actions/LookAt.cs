@@ -16,7 +16,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         {
             var lookRotation = targetTransform.Value.position - transform.position;
             
-            var lookAt = Quaternion.LookRotation(lookRotation.normalized);
+            var lookAt = Quaternion.LookRotation(lookRotation);
 
             //gameObject.transform.LookAt(targetTransform.Value.transform);
 

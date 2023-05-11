@@ -48,6 +48,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override TaskStatus OnUpdate()
         {
+            Debug.Log(speed.Value);
             if (targetTransform == null)
             {
                 Debug.LogWarning("Transform is null");
@@ -57,9 +58,11 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             distance.Value = Vector3.Distance(gameObject.transform.position, targetTransform.transform.position);
             //Debug.Log(distance.Value);
 
-            if (distance.Value <= stoppingDistance || distance.Value > 10)
+            if (distance.Value <= stoppingDistance || distance.Value > 5)
             {
                 animator.SetBool("Running", false);
+                navMeshAgent.enabled = false;
+
                 return TaskStatus.Failure;
             }
 

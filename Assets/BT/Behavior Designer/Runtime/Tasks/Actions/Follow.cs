@@ -51,7 +51,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public override TaskStatus OnUpdate()
         {
             distance.Value = Vector3.Distance(transform.position, player.transform.position);
-            Debug.Log(distance.Value);
+            //Debug.Log(distance.Value);
 
             if (distance.Value <= 10 || targetTransform == null)
             {
