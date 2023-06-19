@@ -18,18 +18,18 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             
             var lookAt = Quaternion.LookRotation(lookRotation);
 
-            //gameObject.transform.LookAt(targetTransform.Value.transform);
+            gameObject.transform.LookAt(targetTransform.Value.transform);
 
-            //if (Quaternion.Angle(lookAt, transform.rotation) >= 5.0f)  // 앵글각이 5보다 작으면 ok
-            //{
-            //    return TaskStatus.Running;
-            //}
+            if (Quaternion.Angle(lookAt, transform.rotation) <= 5.0f)  // 앵글각이 5보다 작으면 ok
+            {
+                return TaskStatus.Success;
+            }
 
             if (lookRotation != Vector3.zero)
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, angularSpeed.Value * Time.deltaTime);
        
            
-            return TaskStatus.Success;
+            return TaskStatus.Running;
         }
     }
 }

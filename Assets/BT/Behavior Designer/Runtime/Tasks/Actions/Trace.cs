@@ -48,7 +48,6 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override TaskStatus OnUpdate()
         {
-            Debug.Log(speed.Value);
             if (targetTransform == null)
             {
                 Debug.LogWarning("Transform is null");
@@ -56,15 +55,15 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             }
 
             distance.Value = Vector3.Distance(gameObject.transform.position, targetTransform.transform.position);
-            //Debug.Log(distance.Value);
+            ////Debug.Log(distance.Value);
 
-            if (distance.Value <= stoppingDistance || distance.Value > 5)
-            {
-                animator.SetBool("Running", false);
-                navMeshAgent.enabled = false;
+            //if (distance.Value <= stoppingDistance || distance.Value > 5)
+            //{
+            //    animator.SetBool("Running", false);
+            //    navMeshAgent.enabled = false;
 
-                return TaskStatus.Failure;
-            }
+            //    return TaskStatus.Failure;
+            //}
 
             if (IsDone) // 목표에 도착했을때
             {

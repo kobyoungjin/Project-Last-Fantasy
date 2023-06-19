@@ -16,6 +16,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityAnimator
         [Tooltip("Should the value be reverted back to its original value after it has been set?")]
         public bool setOnce;
 
+        public SharedString animatorName;
+
         private int hashID;
         private Animator animator;
         private GameObject prevGameObject;
@@ -38,11 +40,16 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityAnimator
 
             hashID = UnityEngine.Animator.StringToHash(paramaterName.Value);
 
+            InitParameter();
+            
             bool prevValue = animator.GetBool(hashID);
             animator.SetBool(hashID, boolValue.Value);
+                       
+
             if (setOnce) {
                 StartCoroutine(ResetValue(prevValue));
             }
+
             return TaskStatus.Success;
         }
 
@@ -57,6 +64,13 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityAnimator
             targetGameObject = null;
             paramaterName = "";
             boolValue = false;
+        }
+
+        void InitParameter()
+        {
+            animator.SetBool("Walking", false);
+            animator.SetBool("Running", false);
+            animator.SetBool("Attacking", false);
         }
     }
 }

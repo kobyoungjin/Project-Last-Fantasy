@@ -28,11 +28,9 @@ namespace FSM
         {
             //Debug.Log("PlayerIdleExcute");
             //Debug.Log(player.GetInput().MoveInput);
-
+            RaycastHit click;
             if (player.GetInput().MoveInput)
             {
-                RaycastHit click;
-
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
                     player.SetPosition(click.point);
@@ -42,32 +40,48 @@ namespace FSM
                     {
                         return;
                     }
-                                        
+
                     player.ChangeState(PlayerState.running);
                 }
+                return;
+
             }
 
             if (player.GetInput().AttackInput)
             {
+                Vector3 mPosition = Input.mousePosition;
+                Vector3 oPosition = player.transform.position;
+
+                mPosition.z = oPosition.z - Camera.main.transform.position.z;
+                Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
+                float dz = target.z - oPosition.z;
+                float dx = target.x - oPosition.x;
+                float rotateDegree = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg;
+                player.transform.rotation = Quaternion.Euler(0f, rotateDegree, 0f);
+
                 player.ChangeState(PlayerState.attack);
+                return;
             }
 
             if (player.GetInput().KeyCodeQ)
             {
                 player.ChangeState(PlayerState.abilityAttack);
+                return;
             }
         }
 
         public override void PhysicsExcute()
         {
-
+            
+            return;
         }
 
         public override void Exit()
         {
             //Debug.Log("PlayerIdleExit");
             player.SetPrevState(PlayerState.idle);
-            animator.SetBool("idle", false);;
+            animator.SetBool("idle", false);
+            animator.SetBool("isIdle", false);
         }
     }
 
@@ -75,7 +89,7 @@ namespace FSM
     {
         private Player player;
         private Animator animator;
-
+        private float time = 0;
         public PlayerCombatIdle(Player owner)
         {
             this.player = owner;
@@ -93,42 +107,68 @@ namespace FSM
         public override void Excute()
         {
             //Debug.Log("PlayerCombatIdleExcute");
-                        
+            
             if (player.GetInput().MoveInput)
             {
                 RaycastHit click;
                 // 클릭을하면 위치 세팅
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
-                    if(click.transform.gameObject.CompareTag("NPC"))
+                    if (click.transform.gameObject.CompareTag("NPC"))
                     {
-
+                        return;
                     }
 
                     player.SetPosition(click.point);
                     player.ChangeState(PlayerState.running);
                 }
+                return;
             }
+
             // 공격
             if (player.GetInput().AttackInput)
             {
+                Vector3 mPosition = Input.mousePosition;
+                Vector3 oPosition = player.transform.position;
+
+                mPosition.z = oPosition.z - Camera.main.transform.position.z;
+                Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
+                float dz = target.z - oPosition.z;
+                float dx = target.x - oPosition.x;
+                float rotateDegree = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg;
+                player.transform.rotation = Quaternion.Euler(0f, rotateDegree, 0f);
+
                 player.ChangeState(PlayerState.attack);
+                return;
             }
+
+
             // Q 스킬 
             if (player.GetInput().KeyCodeQ)
             {
                 player.ChangeState(PlayerState.abilityAttack);
+                return;
             }
         }
 
         public override void PhysicsExcute()
         {
+            time += Time.deltaTime;
+            if (time > 5.5f && !Input.anyKeyDown)
+            {
+                time = 0;
+                player.ChangeState(PlayerState.idle);
+                return;
+            }
 
+            
+            return;
         }
 
         public override void Exit()
         {
-           // Debug.Log("PlayerCombatIdleExit");
+            time = 0;
+            // Debug.Log("PlayerCombatIdleExit");
             player.SetPrevState(PlayerState.combatIdle);
             animator.SetBool("combatIdle", false);
         }
@@ -152,7 +192,6 @@ namespace FSM
 
             player.SetCurrentState(PlayerState.running);
             animator.SetBool("running", true);
-            animator.SetBool("isIdle", false);
         }
 
         public override void Excute()
@@ -167,28 +206,30 @@ namespace FSM
                 {
                     if (click.transform.gameObject.CompareTag("NPC"))
                     {
-
+                        return;
                     }
 
                     player.SetPosition(click.point);
                 }
+                return;
             }
 
             if (player.GetInput().AttackInput)
             {
-
                 player.ChangeState(PlayerState.attack);
+                return;
             }
 
             if (player.GetInput().KeyCodeQ)
             {
                 player.ChangeState(PlayerState.abilityAttack);
+                return;
             }
         }
 
         public override void PhysicsExcute()
         {
-            if(player.GetIsMove())
+            if (player.GetIsMove())
             {
                 if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
                 {
@@ -205,6 +246,7 @@ namespace FSM
             var rotate = Quaternion.LookRotation(pos);
             player.transform.rotation = Quaternion.Slerp(player.transform.rotation, rotate, Time.deltaTime * 5f);  // 천천히 회전
             player.transform.position += pos.normalized * Time.deltaTime * player.GetSpeed();
+            return;
         }
 
         public override void Exit()
@@ -213,7 +255,6 @@ namespace FSM
 
             player.prevState = PlayerState.running;
             animator.SetBool("running", false);
-            animator.SetBool("isIdle", true);
         }
     }
 
@@ -234,12 +275,11 @@ namespace FSM
             animator = player.GetAnimator();
             this.player.SetCurrentState(PlayerState.attack);
             animator.SetBool("attack", true);
-            animator.SetBool("isIdle", false);
         }
 
         public override void Excute()
         {
-           // Debug.Log("PlayerAttackExcute");
+            // Debug.Log("PlayerAttackExcute");
 
             if (player.GetInput().MoveInput)
             {
@@ -249,24 +289,30 @@ namespace FSM
                 {
                     if (click.transform.gameObject.CompareTag("NPC"))
                     {
-
+                        return;
                     }
 
                     player.SetPosition(click.point);
                     player.ChangeState(PlayerState.running);
                 }
+                return;
+            }
+
+            // 공격중 이동 입력이 없으면 끝까지 애니메이션 출력
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("DefaltAttack")
+                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f)
+            {
+                return;
+            }
+            else
+            {
+                player.ChangeState(PlayerState.combatIdle);
             }
 
             if (player.GetInput().AttackInput)
             {
                 animator.Play("DefaltAttack", -1, 0.1f);
-            }
-
-            // 공격중 이동 입력이 없으면 끝까지 애니메이션 출력
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("DefaltAttack")
-                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)  
-            {
-                player.ChangeState(PlayerState.combatIdle);
+                return;
             }
         }
 
@@ -275,7 +321,6 @@ namespace FSM
             //Debug.Log("PlayerAttackExit");
             player.SetPrevState(PlayerState.attack);
             animator.SetBool("attack", false);
-            animator.SetBool("isIdle", true);
         }
 
         public override void PhysicsExcute()
@@ -302,7 +347,6 @@ namespace FSM
             this.player.SetCurrentState(PlayerState.abilityAttack);
 
             animator.SetBool("abilityAttack", true);
-            animator.SetBool("isIdle", false);
         }
 
         public override void Excute()
@@ -313,6 +357,7 @@ namespace FSM
              && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 player.ChangeState(PlayerState.combatIdle);
+                return;
             }
         }
 
@@ -321,7 +366,6 @@ namespace FSM
             //Debug.Log("PlayerAbilityExit");
             player.SetPrevState(PlayerState.abilityAttack);
             animator.SetBool("abilityAttack", false);
-            animator.SetBool("isIdle", true);
         }
 
         public override void PhysicsExcute()

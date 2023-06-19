@@ -14,9 +14,9 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public Animator animator;
         [Tooltip("The transform that the agent is moving towards")]
         public SharedGameObject enemy;
-        [Tooltip("Attack ing?")]
-        public SharedBool attacking;
-        
+
+        public SharedString animationName;
+
         private bool triggered = false;
 
         public override void OnAwake()
@@ -26,37 +26,35 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override TaskStatus OnUpdate()
         {
-            float distance = Vector3.Distance(gameObject.transform.position, enemy.Value.transform.position);
-
-            if (triggered || distance > 1.5f)
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
+               animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
             {
-                 if(animator.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
-                    animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f && attacking.Value)
-                    return TaskStatus.Running;
-
-                CancelAttack();
-                triggered = false;
-                return TaskStatus.Success;
+                //CancelAttack();
+                return TaskStatus.Running;
             }
 
-            OnAttack(force);
-            triggered = true;
-            return TaskStatus.Running;
+
+            //  CancelAttack();
+            //  triggered = false;
+            //return TaskStatus.Success;
+            //}
+            CancelAttack();
+            //OnAttack(force.Value);
+            // triggered = true;
+            return TaskStatus.Success;
         }
 
         public void CancelAttack()
         {
             enemy.Value.GetComponent<NavMeshAgent>().enabled = true;
             //rigid.isKinematic = true;
-            animator.SetBool("Attacking", false);
-            attacking = false;
+            animator.SetBool(animationName.Value, false);
         }
 
-        public void OnAttack(SharedInt force)
+        public void OnAttack(int force)
         {
             enemy.Value.GetComponent<NavMeshAgent>().enabled = false;
-            animator.SetBool("Attacking", true);
-            attacking = true;
+            //animator.SetBool("Attacking", true);
             //rigid.isKinematic = false;
             //rigid.AddForce(Vector3.up * force, ForceMode.Impulse);
         }
