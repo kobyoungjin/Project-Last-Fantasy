@@ -47,7 +47,8 @@ public class TrolControl : MonoBehaviour {
 			}
 			
 			
-		} else {
+		} 
+		else {
 			anim.SetInteger ("moving", 0);
 		}
 

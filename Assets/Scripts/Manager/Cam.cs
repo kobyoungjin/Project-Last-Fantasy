@@ -20,10 +20,12 @@ public class Cam : MonoBehaviour
     }
     void LateUpdate()
     {
-        //transform.position = new Vector3(delta.x, 3.0f + delta.y * distance, delta.z * distance) + player.transform.position + Vector3.zero;
-        transform.position = new Vector3(0, 4f, -8f) + player.transform.position + Vector3.zero;
+        
+        transform.position = new Vector3(delta.x, 3.0f + delta.y * distance, delta.z * distance) + player.transform.position + Vector3.zero + Vector3.forward;
+        //transform.position = new Vector3(0, 6.5f, -8.5f) + player.transform.position + Vector3.zero;
         transform.LookAt(player.transform);
-        //CalculateZoom();
+
+        CalculateZoom();
     }
 
     void CalculateZoom()

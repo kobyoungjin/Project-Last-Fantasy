@@ -26,7 +26,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override TaskStatus OnUpdate()
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("attack 1") &&
                animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
             {
                 //CancelAttack();
@@ -38,7 +38,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             //  triggered = false;
             //return TaskStatus.Success;
             //}
-            CancelAttack();
+            animator.SetInteger("battle", 0);
+            //CancelAttack();
             //OnAttack(force.Value);
             // triggered = true;
             return TaskStatus.Success;
