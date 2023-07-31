@@ -11,11 +11,16 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         [Tooltip("Angular speed of the enemy")]
         public SharedFloat angularSpeed;
 
-
+                
         public override TaskStatus OnUpdate()
         {
+            Animator animator = gameObject.GetComponent<Animator>();
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            {
+                return TaskStatus.Running;
+            }
+
             var lookRotation = targetTransform.Value.position - transform.position;
-            
             var lookAt = Quaternion.LookRotation(lookRotation);
 
             gameObject.transform.LookAt(targetTransform.Value.transform);
@@ -26,7 +31,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             }
 
             if (lookRotation != Vector3.zero)
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, angularSpeed.Value * Time.deltaTime);
+                transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, angularSpeed.Value * Time.deltaTime);
        
            
             return TaskStatus.Running;

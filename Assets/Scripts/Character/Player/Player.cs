@@ -39,9 +39,9 @@ namespace FSM
         void Start()
         {
             animator = GetComponent<Animator>();
-            inputManager = GetComponent<InputManager>();
-
+            
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+            inputManager = gameManager.GetComponent<InputManager>();
             //gameManager.SetText(this.gameObject);
             Enter();
         }

@@ -5,34 +5,38 @@ using TMPro;
 
 public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 {
-    public static bool IsLooping { set; get; } = true;
+    //public static bool IsLooping { set; get; } = true;
 
-    //protected override void Awake()
-    //{
-    //    base.Awake();
+    static GameManager instace;
+    static GameManager Instance { get { Init(); return instace; } }
 
-    //    var objs = FindObjectsOfType<GameManager>();
-    //    if (objs.Length == 1)  // GameManager타입의 개수가 1개일때만 
-    //        DontDestroyOnLoad(this.gameObject);
-    //    else  // 아니면 삭제
-    //        Destroy(this.gameObject);
-
-
-    //    entity = FindObjectOfType<Player>().GetComponent<Player>();
-    //    entity.Init(entity.name);
-
-    //    return;
-    //}
+    InputManager input = new InputManager();
+    public static InputManager Input { get { return Instance.input; } }
 
     void Start()
     {
- 
+        Init();
     }
 
     void Update()
     {
-        
-        //entity.Updated();
+        input.OnUpdate();
+    }
+
+    static void Init()
+    {
+        if (instace == null)
+        {
+            GameObject obj = GameObject.Find("GameManager");
+            if (obj == null)
+            {
+                obj = new GameObject { name = "GameManager" };
+                obj.AddComponent<GameManager>();
+            }
+
+            DontDestroyOnLoad(obj);
+            instace = obj.GetComponent<GameManager>();
+        }
     }
 
     public void SetText(GameObject obj)

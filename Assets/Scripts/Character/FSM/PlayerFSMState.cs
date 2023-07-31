@@ -191,7 +191,9 @@ namespace FSM
             animator = player.GetAnimator();
 
             player.SetCurrentState(PlayerState.running);
-            animator.SetBool("running", true);
+            //animator.SetBool("running", true);
+            animator.SetInteger("run", 1);
+            animator.SetBool("move", true);
         }
 
         public override void Excute()
@@ -254,7 +256,9 @@ namespace FSM
             //Debug.Log("PlayerRunningExit");
 
             player.prevState = PlayerState.running;
-            animator.SetBool("running", false);
+            //animator.SetBool("running", false);
+            animator.SetInteger("run", 0);
+            animator.SetBool("move", false);
         }
     }
 

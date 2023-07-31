@@ -16,16 +16,17 @@ public class Cam : MonoBehaviour
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        delta = new Vector3(0, 0.6f, -1.0f);
+        delta = new Vector3(0, 0.6f, -1.5f);
     }
     void LateUpdate()
     {
         
-        transform.position = new Vector3(delta.x, 3.0f + delta.y * distance, delta.z * distance) + player.transform.position + Vector3.zero + Vector3.forward;
-        //transform.position = new Vector3(0, 6.5f, -8.5f) + player.transform.position + Vector3.zero;
+        //transform.position = new Vector3(delta.x, 3.0f + delta.y * distance, delta.z * distance) + player.transform.position + Vector3.zero;
+        //transform.rotation = Quaternion.Euler(transform.rotation.x + distance, transform.rotation.y, transform.rotation.z);
+        transform.position = new Vector3(0, 7.2f, -10.5f) + player.transform.position + Vector3.zero;
         transform.LookAt(player.transform);
 
-        CalculateZoom();
+        //CalculateZoom();
     }
 
     void CalculateZoom()

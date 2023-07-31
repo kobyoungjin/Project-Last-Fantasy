@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class Mouse : MonoBehaviour
 {
+    enum CursorType
+    {
+        None,
+        Attack,
+        Hand,
+    }
+
+    CursorType cursorType = CursorType.None;
+
     InputManager inputManager;
     NPCDialogue npcDialogue;
     Renderer renderers;
     Transform selectedTarget;
     RaycastHit hit;
 
+    Texture2D attackIcon;
+    Texture2D handIcon;
+
     private void Start()
     {
         //npcDialogue = GameObject.FindObjectOfType<NPCDialogue>().GetComponent<NPCDialogue>();
+        attackIcon = Resources.Load<Texture2D>("Cursors/Cursor 64/Cursor_Attack");
+        handIcon = Resources.Load<Texture2D>("Cursors/Cursor 64/Cursor_Basic2");
     }
 
     void Update()
@@ -79,4 +93,29 @@ public class Mouse : MonoBehaviour
         AddOutline(obj);
     }
 
+    void UpdateMouseCursor()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100.0f, 7))
+        {
+            if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
+            {
+                if (cursorType != CursorType.Attack)
+                {
+                    Cursor.SetCursor(attackIcon, new Vector2(attackIcon.width / 5, 0), CursorMode.Auto);
+                    cursorType = CursorType.Attack;
+                }
+            }
+            else
+            {
+                if (cursorType != CursorType.Hand)
+                {
+                    Cursor.SetCursor(handIcon, new Vector2(handIcon.width / 3, 0), CursorMode.Auto);
+                    cursorType = CursorType.Hand;
+                }
+            }
+        }
+    }
 }
