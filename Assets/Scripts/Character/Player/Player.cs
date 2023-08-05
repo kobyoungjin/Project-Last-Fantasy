@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Player : MonoBehaviour
+    public class Player : Status
     {
         private Camera camera;
         private InputManager inputManager;
@@ -14,10 +14,6 @@ namespace FSM
         private GameManager gameManager;
 
         Vector3 destination;
-
-        float speed = 4.0f;
-        int hp;
-        int mp;
         private bool isMove;
 
         public StateMachine<Player> currentFSM;
@@ -25,6 +21,12 @@ namespace FSM
 
         public PlayerState currentState;
         public PlayerState prevState;
+
+        protected int exp;
+        protected int gold;
+
+        public int Exp { get { return exp; } set { exp = value; } }
+        public int Gold { get { return gold; } set { gold = value; } }
 
         public Player()
         {
@@ -38,10 +40,19 @@ namespace FSM
 
         void Start()
         {
+            level = 1;
+            hp = 100;
+            maxHp = 100;
+            attack = 5;
+            defense = 5;
+            moveSpeed = 4.0f;
+            exp = 0;
+            gold = 0;
+
             animator = GetComponent<Animator>();
-            
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
+
             //gameManager.SetText(this.gameObject);
             Enter();
         }
@@ -110,6 +121,20 @@ namespace FSM
         //    }
         //}
 
+        public new void Attack()
+        {
+            Vector3 mPosition = Input.mousePosition;
+            Vector3 oPosition = transform.position;
+
+            mPosition.z = oPosition.z - Camera.main.transform.position.z;
+            Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
+            float dz = target.z - oPosition.z;
+            float dx = target.x - oPosition.x;
+            float rotateDegree = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, rotateDegree, 0f);
+            return;
+        }
+
         // 마우스 좌표 설정함수
         public void SetPosition(Vector3 pos)
         {
@@ -125,11 +150,6 @@ namespace FSM
         public Vector3 GetTargetPosition()
         {
             return destination;
-        }
-
-        public float GetSpeed()
-        {
-            return speed;
         }
 
         public InputManager GetInput()
@@ -155,26 +175,6 @@ namespace FSM
         public void SetPrevState(PlayerState newState)
         {
             prevState = newState;
-        }
-
-        public int GetHP()
-        {
-            return hp;
-        }
-
-        public void SetHP(int hp)
-        {
-            this.hp = hp;
-        }
-
-        public int GetMP()
-        {
-            return mp;
-        }
-
-        public void SetMP(int mp)
-        {
-            this.mp = mp;
         }
 
         public bool GetIsMove()

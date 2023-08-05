@@ -20,8 +20,7 @@ namespace FSM
 
             animator = player.GetAnimator();
             this.player.SetCurrentState(PlayerState.idle);
-            animator.SetBool("idle", true);
-            animator.SetBool("isIdle", true);
+            animator.SetInteger("idle", 0);
         }
 
         public override void Excute()
@@ -49,15 +48,7 @@ namespace FSM
 
             if (player.GetInput().AttackInput)
             {
-                Vector3 mPosition = Input.mousePosition;
-                Vector3 oPosition = player.transform.position;
-
-                mPosition.z = oPosition.z - Camera.main.transform.position.z;
-                Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
-                float dz = target.z - oPosition.z;
-                float dx = target.x - oPosition.x;
-                float rotateDegree = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg;
-                player.transform.rotation = Quaternion.Euler(0f, rotateDegree, 0f);
+                player.Attack();
 
                 player.ChangeState(PlayerState.attack);
                 return;
@@ -72,7 +63,6 @@ namespace FSM
 
         public override void PhysicsExcute()
         {
-            
             return;
         }
 
@@ -80,7 +70,6 @@ namespace FSM
         {
             //Debug.Log("PlayerIdleExit");
             player.SetPrevState(PlayerState.idle);
-            animator.SetBool("idle", false);
             animator.SetBool("isIdle", false);
         }
     }
@@ -101,13 +90,13 @@ namespace FSM
 
             animator = player.GetAnimator();
             this.player.SetCurrentState(PlayerState.combatIdle);
-            animator.SetBool("combatIdle", true);
+            animator.SetInteger("idle", 1);
         }
 
         public override void Excute()
         {
             //Debug.Log("PlayerCombatIdleExcute");
-            
+
             if (player.GetInput().MoveInput)
             {
                 RaycastHit click;
@@ -128,15 +117,7 @@ namespace FSM
             // 공격
             if (player.GetInput().AttackInput)
             {
-                Vector3 mPosition = Input.mousePosition;
-                Vector3 oPosition = player.transform.position;
-
-                mPosition.z = oPosition.z - Camera.main.transform.position.z;
-                Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
-                float dz = target.z - oPosition.z;
-                float dx = target.x - oPosition.x;
-                float rotateDegree = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg;
-                player.transform.rotation = Quaternion.Euler(0f, rotateDegree, 0f);
+                player.Attack();
 
                 player.ChangeState(PlayerState.attack);
                 return;
@@ -161,7 +142,7 @@ namespace FSM
                 return;
             }
 
-            
+
             return;
         }
 
@@ -170,7 +151,7 @@ namespace FSM
             time = 0;
             // Debug.Log("PlayerCombatIdleExit");
             player.SetPrevState(PlayerState.combatIdle);
-            animator.SetBool("combatIdle", false);
+            animator.SetInteger("idle", 0);
         }
     }
 
@@ -191,7 +172,6 @@ namespace FSM
             animator = player.GetAnimator();
 
             player.SetCurrentState(PlayerState.running);
-            //animator.SetBool("running", true);
             animator.SetInteger("run", 1);
             animator.SetBool("move", true);
         }
@@ -218,6 +198,8 @@ namespace FSM
 
             if (player.GetInput().AttackInput)
             {
+                player.Attack();
+
                 player.ChangeState(PlayerState.attack);
                 return;
             }
@@ -236,6 +218,7 @@ namespace FSM
                 if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
                 {
                     player.SetIsMove(false);
+                    //player.ChangeState(PlayerState.idle);
                     player.ChangeState(PlayerState.combatIdle);
                     return;
                 }
@@ -247,7 +230,7 @@ namespace FSM
             // 지정된 위치까지 이동
             var rotate = Quaternion.LookRotation(pos);
             player.transform.rotation = Quaternion.Slerp(player.transform.rotation, rotate, Time.deltaTime * 5f);  // 천천히 회전
-            player.transform.position += pos.normalized * Time.deltaTime * player.GetSpeed();
+            player.transform.position += pos.normalized * Time.deltaTime * player.MoveSpeed;
             return;
         }
 
@@ -256,7 +239,6 @@ namespace FSM
             //Debug.Log("PlayerRunningExit");
 
             player.prevState = PlayerState.running;
-            //animator.SetBool("running", false);
             animator.SetInteger("run", 0);
             animator.SetBool("move", false);
         }
@@ -266,7 +248,7 @@ namespace FSM
     {
         private Player player;
         private Animator animator;
-
+        bool attacking = false;
         public PlayerAttack(Player owner)
         {
             this.player = owner;
@@ -278,12 +260,12 @@ namespace FSM
 
             animator = player.GetAnimator();
             this.player.SetCurrentState(PlayerState.attack);
-            animator.SetBool("attack", true);
+            animator.SetInteger("attack", 1);
         }
 
         public override void Excute()
         {
-            // Debug.Log("PlayerAttackExcute");
+            //Debug.Log("PlayerAttackExcute");
 
             if (player.GetInput().MoveInput)
             {
@@ -304,16 +286,18 @@ namespace FSM
 
             // 공격중 이동 입력이 없으면 끝까지 애니메이션 출력
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("DefaltAttack")
-                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f)
+                    && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
+                attacking = false;
+                player.ChangeState(PlayerState.combatIdle);
                 return;
             }
             else
             {
-                player.ChangeState(PlayerState.combatIdle);
+                attacking = true;
             }
 
-            if (player.GetInput().AttackInput)
+            if (player.GetInput().AttackInput && !attacking)
             {
                 animator.Play("DefaltAttack", -1, 0.1f);
                 return;
@@ -324,7 +308,8 @@ namespace FSM
         {
             //Debug.Log("PlayerAttackExit");
             player.SetPrevState(PlayerState.attack);
-            animator.SetBool("attack", false);
+
+            animator.SetInteger("attack", 0);
         }
 
         public override void PhysicsExcute()
@@ -350,7 +335,7 @@ namespace FSM
             animator = player.GetAnimator();
             this.player.SetCurrentState(PlayerState.abilityAttack);
 
-            animator.SetBool("abilityAttack", true);
+            animator.SetInteger("attack", 2);
         }
 
         public override void Excute()
@@ -369,7 +354,7 @@ namespace FSM
         {
             //Debug.Log("PlayerAbilityExit");
             player.SetPrevState(PlayerState.abilityAttack);
-            animator.SetBool("abilityAttack", false);
+            animator.SetInteger("attack", 0);
         }
 
         public override void PhysicsExcute()
