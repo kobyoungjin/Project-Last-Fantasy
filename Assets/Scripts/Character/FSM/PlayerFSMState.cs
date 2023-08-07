@@ -33,9 +33,19 @@ namespace FSM
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
                     player.SetPosition(click.point);
+                    Debug.Log(click.collider.gameObject.name);
+                    if(click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
+                    {
+                        player.GetMouseManager().SetMovePointer(false);
+                    }
+                    else
+                    {
+                        player.GetMouseManager().SetPos(click.point);
+                        player.GetMouseManager().SetMovePointer(true);
+                    }
 
-                    float distance = player.GetDistance(click.point);
-                    if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.1f)
+                    float distance = player.GetDistance();
+                    if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.2f)
                     {
                         return;
                     }
@@ -109,6 +119,8 @@ namespace FSM
                     }
 
                     player.SetPosition(click.point);
+                    player.GetMouseManager().SetPos(click.point);
+                    player.GetMouseManager().SetMovePointer(true);
                     player.ChangeState(PlayerState.running);
                 }
                 return;
@@ -186,12 +198,17 @@ namespace FSM
 
                 if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
                 {
-                    if (click.transform.gameObject.CompareTag("NPC"))
-                    {
-                        return;
-                    }
-
                     player.SetPosition(click.point);
+
+                    if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
+                    {
+                        player.GetMouseManager().SetMovePointer(false);
+                    }
+                    else
+                    {
+                        player.GetMouseManager().SetPos(click.point);
+                        player.GetMouseManager().SetMovePointer(true);
+                    }
                 }
                 return;
             }
@@ -218,6 +235,7 @@ namespace FSM
                 if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
                 {
                     player.SetIsMove(false);
+                    player.GetMouseManager().SetMovePointer(false);
                     //player.ChangeState(PlayerState.idle);
                     player.ChangeState(PlayerState.combatIdle);
                     return;
@@ -279,6 +297,8 @@ namespace FSM
                     }
 
                     player.SetPosition(click.point);
+                    player.GetMouseManager().SetPos(click.point);
+                    player.GetMouseManager().SetMovePointer(true);
                     player.ChangeState(PlayerState.running);
                 }
                 return;

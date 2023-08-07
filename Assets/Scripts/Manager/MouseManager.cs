@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mouse : MonoBehaviour
+public class MouseManager : MonoBehaviour
 {
     int mask = (1 << (int)Define.Layer.Ground | 1 << (int)Define.Layer.Monster | 1 << (int)Define.Layer.NPC);
 
@@ -10,7 +10,7 @@ public class Mouse : MonoBehaviour
     Vector3 destPos;
 
     GameObject lockTarget;
-    
+
     enum CursorType
     {
         None,
@@ -29,21 +29,33 @@ public class Mouse : MonoBehaviour
     public Texture2D attackIcon;
     public Texture2D handIcon;
     public Texture2D defaultIcon;
-      
+
+    Vector3 pos;
+    float delta = 0.5f; // 최대이동 거리
+    float speed = 3.0f; // 이동속도
+
+    float rotateSpeed = 100;
+    GameObject movePoint;
+
     void Start()
     {
         //npcDialogue = GameObject.FindObjectOfType<NPCDialogue>().GetComponent<NPCDialogue>();
         attackIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Attack");
         handIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Hand");
         defaultIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Default");
+        movePoint = GameObject.FindGameObjectWithTag("MovePoint").gameObject;
+        movePoint.SetActive(false);
 
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
+        Managers.Input.MouseAction -= OnMouseEvent;
+        Managers.Input.MouseAction += OnMouseEvent;
     }
 
     void Update()
     {
         UpdateCursorAndOutLine();
+        UpdateMovePoint();
     }
 
     // outline 강조해주는 함수
@@ -71,7 +83,7 @@ public class Mouse : MonoBehaviour
         if (selectedTarget == null) return;
 
         RemoveOutline(renderers);
-        selectedTarget = null;        
+        selectedTarget = null;
     }
 
     // 타켓 선택
@@ -82,6 +94,27 @@ public class Mouse : MonoBehaviour
         ClearTarget();
         selectedTarget = obj;
         AddOutline(obj, width, color);
+    }
+
+    void UpdateMovePoint()
+    {
+     
+        Vector3 v = pos;
+        v.y = 1.0f;
+        v.y -= delta * Mathf.Sin(Time.time * speed);
+
+        movePoint.transform.position = v;
+        movePoint.transform.Rotate(new Vector3(0, rotateSpeed * Time.deltaTime, 0));
+
+    }
+    public void SetPos(Vector3 pos)
+    {
+        this.pos = pos;
+    }
+
+    public void SetMovePointer(bool movePoint)
+    {
+        this.movePoint.SetActive(movePoint);
     }
 
     void UpdateCursorAndOutLine()
@@ -104,7 +137,7 @@ public class Mouse : MonoBehaviour
                     SelectTarget(hit.transform, 0.0003f, Color.red);
                 }
             }
-            else if(hit.collider.gameObject.layer == (int)Define.Layer.NPC)
+            else if (hit.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
                 if (cursorType != CursorType.Hand)
                 {
@@ -162,6 +195,8 @@ public class Mouse : MonoBehaviour
                         destPos = lockTarget.transform.position;
                     else if (raycastHit)
                         destPos = hit.point;
+
+                    SetMovePointer(false);
                 }
                 break;
         }

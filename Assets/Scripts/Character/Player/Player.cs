@@ -15,6 +15,7 @@ namespace FSM
 
         Vector3 destination;
         private bool isMove;
+        private MouseManager mouseManager;
 
         public StateMachine<Player> currentFSM;
         public BaseState<Player>[] arrState = new BaseState<Player>[(int)PlayerState.end];
@@ -52,6 +53,7 @@ namespace FSM
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
+            mouseManager = gameManager.GetComponent<MouseManager>();
 
             //gameManager.SetText(this.gameObject);
             Enter();
@@ -139,13 +141,12 @@ namespace FSM
         public void SetPosition(Vector3 pos)
         {
             destination = pos;
-            isMove = true; 
+            isMove = true;
         }
 
-        public float GetDistance(Vector3 targetPos)
+        public float GetDistance()
         {
-            return Vector3.Distance(this.transform.position, targetPos);
-
+            return Vector3.Distance(this.transform.position, destination);
         }
         public Vector3 GetTargetPosition()
         {
@@ -185,6 +186,11 @@ namespace FSM
         public void SetIsMove(bool isMove)
         {
             this.isMove = isMove;
+        }
+
+        public MouseManager GetMouseManager()
+        {
+            return mouseManager;
         }
     }        
 }

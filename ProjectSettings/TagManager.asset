@@ -7,6 +7,8 @@ TagManager:
   - NPC
   - WayPoint
   - Monster
+  - Enemy
+  - MovePoint
   layers:
   - Default
   - TransparentFX
