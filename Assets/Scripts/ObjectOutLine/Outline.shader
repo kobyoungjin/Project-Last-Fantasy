@@ -4,7 +4,7 @@ Shader "Custom/OutLine"
 	{
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 		_OutLineColor("OutLine Color", Color) = (0,0,0,0)          // 색 변경
-		_OutLineWidth("OutLine Width", Range(0.001, 0.03)) = 0.03  // 굵기 조절
+		_OutLineWidth("OutLine Width", Range(0, 0.03)) = 0.03  // 굵기 조절
 	}
 		SubShader
 		{

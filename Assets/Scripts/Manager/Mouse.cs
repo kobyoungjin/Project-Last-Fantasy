@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class Mouse : MonoBehaviour
 {
-    int mask = (1 << (int)Define.Layer.Ground | 1 << (int)Define.Layer.Monster);
+    int mask = (1 << (int)Define.Layer.Ground | 1 << (int)Define.Layer.Monster | 1 << (int)Define.Layer.NPC);
 
     PlayerState state;
     Vector3 destPos;
 
     GameObject lockTarget;
-
+    
     enum CursorType
     {
         None,
         Attack,
         Hand,
+        Default,
     }
 
     CursorType cursorType = CursorType.None;
@@ -24,18 +25,17 @@ public class Mouse : MonoBehaviour
     NPCDialogue npcDialogue;
     Renderer renderers;
     Transform selectedTarget;
-    RaycastHit hit;
 
-    Texture2D attackIcon;
-    Texture2D handIcon;
-
-    
-
+    public Texture2D attackIcon;
+    public Texture2D handIcon;
+    public Texture2D defaultIcon;
+      
     void Start()
     {
         //npcDialogue = GameObject.FindObjectOfType<NPCDialogue>().GetComponent<NPCDialogue>();
-        attackIcon = Managers.Resource.Load<Texture2D>("Cursors/Cursor 64/Cursor_Attack");
-        handIcon = Managers.Resource.Load<Texture2D>("Cursors/Cursor 64/Cursor_Basic2");
+        attackIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Attack");
+        handIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Hand");
+        defaultIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Default");
 
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
@@ -43,39 +43,17 @@ public class Mouse : MonoBehaviour
 
     void Update()
     {
-        Raycast();
-        UpdateMouseCursor();
-    }
-
-    void Raycast()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(ray.origin, ray.direction * 1000, Color.blue);
-        int layer = 1 << LayerMask.NameToLayer("NPC");
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer))
-        {
-            Transform obj = hit.transform;
-            SelectTarget(obj);
-
-            //if(inputManager.MoveInput)
-            //{
-            //    npcDialogue.SetDialogue(obj);
-            //}
-
-        }
-        else
-        {
-            ClearTarget();
-        }
+        UpdateCursorAndOutLine();
     }
 
     // outline 강조해주는 함수
-    void AddOutline(Transform obj)
+    void AddOutline(Transform obj, float width, Color color)
     {
         if (obj == null) return;
 
         renderers = obj.GetComponent<Renderer>();
-        renderers.sharedMaterial.SetFloat("_OutLineWidth", 0.03f);
+        renderers.sharedMaterial.SetFloat("_OutLineWidth", width);
+        renderers.sharedMaterial.SetColor("_OutLineColor", color);
     }
 
     // outline 풀어주는 함수
@@ -83,7 +61,7 @@ public class Mouse : MonoBehaviour
     {
         if (renderer != null)
         {
-            renderer.sharedMaterial.SetFloat("_OutLineWidth", 0.001f);
+            renderer.sharedMaterial.SetFloat("_OutLineWidth", 0);
         }
     }
 
@@ -92,21 +70,21 @@ public class Mouse : MonoBehaviour
     {
         if (selectedTarget == null) return;
 
-        selectedTarget = null;
         RemoveOutline(renderers);
+        selectedTarget = null;        
     }
 
     // 타켓 선택
-    void SelectTarget(Transform obj)
+    void SelectTarget(Transform obj, float width, Color color)
     {
         if (obj == null) return;
 
         ClearTarget();
         selectedTarget = obj;
-        AddOutline(obj);
+        AddOutline(obj, width, color);
     }
 
-    void UpdateMouseCursor()
+    void UpdateCursorAndOutLine()
     {
         if (state == PlayerState.die)
             return;
@@ -122,14 +100,28 @@ public class Mouse : MonoBehaviour
                 {
                     Cursor.SetCursor(attackIcon, new Vector2(attackIcon.width / 5, 0), CursorMode.Auto);
                     cursorType = CursorType.Attack;
+
+                    SelectTarget(hit.transform, 0.0003f, Color.red);
                 }
             }
-            else
+            else if(hit.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
                 if (cursorType != CursorType.Hand)
                 {
                     Cursor.SetCursor(handIcon, new Vector2(handIcon.width / 3, 0), CursorMode.Auto);
                     cursorType = CursorType.Hand;
+
+                    SelectTarget(hit.transform, 0.02f, Color.yellow);
+                }
+            }
+            else
+            {
+                if (cursorType != CursorType.Default)
+                {
+                    Cursor.SetCursor(defaultIcon, new Vector2(defaultIcon.width / 3, 0), CursorMode.Auto);
+                    cursorType = CursorType.Default;
+
+                    ClearTarget();
                 }
             }
         }
@@ -172,9 +164,6 @@ public class Mouse : MonoBehaviour
                         destPos = hit.point;
                 }
                 break;
-            case Define.MouseEvent.PointerUp:
-                lockTarget = null;
-                break;
         }
     }
     void OnMouseClicked(Define.MouseEvent evt)
@@ -196,11 +185,11 @@ public class Mouse : MonoBehaviour
 
             if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
             {
-                Debug.Log("Monster");
+                Debug.Log("layer 8 Monster");
             }
-            else
+            else if (hit.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
-                Debug.Log("Ground");
+                Debug.Log("layer 7 NPC");
             }
         }
     }

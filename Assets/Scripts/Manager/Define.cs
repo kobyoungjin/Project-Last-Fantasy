@@ -11,6 +11,7 @@ public class Define : MonoBehaviour
     }
     public enum Layer
     {
+        NPC = 7,
         Monster = 8,
         Ground = 9,
         Block = 10

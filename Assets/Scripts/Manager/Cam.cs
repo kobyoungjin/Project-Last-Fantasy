@@ -19,8 +19,8 @@ public class Cam : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         delta = new Vector3(0, 0.6f, -1.5f);
-        yPos = 7.26f;
-        zPos = 4.37f;
+        yPos = 7.26f;  // 8
+        zPos = 5.65f;
     }
     void LateUpdate()
     {
@@ -37,7 +37,7 @@ public class Cam : MonoBehaviour
             {
                 //transform.position = new Vector3(delta.x, 3.0f + delta.y * distance, delta.z * distance) + player.transform.position + Vector3.zero;
                 //transform.rotation = Quaternion.Euler(transform.rotation.x + distance, transform.rotation.y, transform.rotation.z);
-                transform.position = new Vector3(0, yPos, zPos) + player.transform.position + Vector3.zero;
+                transform.position = new Vector3(0, yPos, -zPos) + player.transform.position + Vector3.zero;
                 transform.LookAt(player.transform);
             }
         }
