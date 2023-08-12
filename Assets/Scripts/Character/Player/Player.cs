@@ -7,21 +7,23 @@ namespace FSM
 {
     public class Player : Status
     {
-        private Camera camera;
         private InputManager inputManager;
-        private RaycastHit click;
         private Animator animator;
         private GameManager gameManager;
-
-        Vector3 destination;
-        private bool isMove;
         private MouseManager mouseManager;
 
+        private Vector3 destination;
+        private RaycastHit click;
+        private Rigidbody playerRigidbody;
+               
         public StateMachine<Player> currentFSM;
         public BaseState<Player>[] arrState = new BaseState<Player>[(int)PlayerState.end];
 
         public PlayerState currentState;
         public PlayerState prevState;
+
+        private float turnSpeed = 300f;
+        private bool isMove;
 
         protected int exp;
         protected int gold;
@@ -35,8 +37,8 @@ namespace FSM
         }
 
         void Awake()
-        {
-            camera = Camera.main;
+        { 
+            this.playerRigidbody = GetComponent<Rigidbody>();
         }          
 
         void Start()
@@ -54,7 +56,7 @@ namespace FSM
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
             mouseManager = gameManager.GetComponent<MouseManager>();
-
+            
             //gameManager.SetText(this.gameObject);
             Enter();
         }
@@ -123,18 +125,40 @@ namespace FSM
         //    }
         //}
 
-        public new void Attack()
+        public void Turn()
         {
-            Vector3 mPosition = Input.mousePosition;
-            Vector3 oPosition = transform.position;
+            if (animator.GetInteger("attack") > 0) return;
 
-            mPosition.z = oPosition.z - Camera.main.transform.position.z;
-            Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
-            float dz = target.z - oPosition.z;
-            float dx = target.x - oPosition.x;
-            float rotateDegree = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, rotateDegree, 0f);
-            return;
+            //RaycastHit hit;
+            Vector3 targetPos = Vector3.zero;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click, 10000f))
+            {
+                targetPos = click.point;
+            }
+            transform.LookAt(targetPos);
+        }
+
+        public void SetMousePoint()
+        {
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
+            {
+                SetPosition(click.point);
+                if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
+                {
+                    GetMouseManager().SetMovePointer(false);
+                }
+                else
+                {
+                    GetMouseManager().SetPos(click.point);
+                    GetMouseManager().SetMovePointer(true);
+                }
+
+                float distance = Vector3.Distance(this.transform.position, destination);
+                if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.2f)
+                {
+                    return;
+                }
+            }
         }
 
         // 마우스 좌표 설정함수
@@ -144,10 +168,6 @@ namespace FSM
             isMove = true;
         }
 
-        public float GetDistance()
-        {
-            return Vector3.Distance(this.transform.position, destination);
-        }
         public Vector3 GetTargetPosition()
         {
             return destination;
@@ -157,12 +177,6 @@ namespace FSM
         {
             return inputManager;
         }
-
-        public Camera GetMainCamera()
-        {
-            return camera;
-        }
-
         public Animator GetAnimator()
         {
             return animator;

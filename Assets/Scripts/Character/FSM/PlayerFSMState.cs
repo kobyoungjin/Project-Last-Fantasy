@@ -27,39 +27,17 @@ namespace FSM
         {
             //Debug.Log("PlayerIdleExcute");
             //Debug.Log(player.GetInput().MoveInput);
-            RaycastHit click;
             if (player.GetInput().MoveInput)
             {
-                if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
-                {
-                    player.SetPosition(click.point);
-                    Debug.Log(click.collider.gameObject.name);
-                    if(click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
-                    {
-                        player.GetMouseManager().SetMovePointer(false);
-                    }
-                    else
-                    {
-                        player.GetMouseManager().SetPos(click.point);
-                        player.GetMouseManager().SetMovePointer(true);
-                    }
-
-                    float distance = player.GetDistance();
-                    if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.2f)
-                    {
-                        return;
-                    }
-
-                    player.ChangeState(PlayerState.running);
-                }
+                player.SetMousePoint();
+                player.ChangeState(PlayerState.running);
                 return;
 
             }
 
             if (player.GetInput().AttackInput)
             {
-                player.Attack();
-
+                player.Turn();
                 player.ChangeState(PlayerState.attack);
                 return;
             }
@@ -109,28 +87,16 @@ namespace FSM
 
             if (player.GetInput().MoveInput)
             {
-                RaycastHit click;
-                // 클릭을하면 위치 세팅
-                if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
-                {
-                    if (click.transform.gameObject.CompareTag("NPC"))
-                    {
-                        return;
-                    }
+                player.SetMousePoint();
+                player.ChangeState(PlayerState.running);
 
-                    player.SetPosition(click.point);
-                    player.GetMouseManager().SetPos(click.point);
-                    player.GetMouseManager().SetMovePointer(true);
-                    player.ChangeState(PlayerState.running);
-                }
                 return;
             }
 
             // 공격
             if (player.GetInput().AttackInput)
             {
-                player.Attack();
-
+                player.Turn();
                 player.ChangeState(PlayerState.attack);
                 return;
             }
@@ -194,28 +160,13 @@ namespace FSM
 
             if (player.GetInput().MoveInput)
             {
-                RaycastHit click;
-
-                if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
-                {
-                    player.SetPosition(click.point);
-
-                    if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
-                    {
-                        player.GetMouseManager().SetMovePointer(false);
-                    }
-                    else
-                    {
-                        player.GetMouseManager().SetPos(click.point);
-                        player.GetMouseManager().SetMovePointer(true);
-                    }
-                }
+                player.SetMousePoint();
                 return;
             }
 
             if (player.GetInput().AttackInput)
             {
-                player.Attack();
+                player.Turn();
 
                 player.ChangeState(PlayerState.attack);
                 return;
@@ -228,7 +179,7 @@ namespace FSM
             }
         }
 
-        public override void PhysicsExcute()
+        public override void PhysicsExcute()  // 이동 함수
         {
             if (player.GetIsMove())
             {
@@ -236,7 +187,6 @@ namespace FSM
                 {
                     player.SetIsMove(false);
                     player.GetMouseManager().SetMovePointer(false);
-                    //player.ChangeState(PlayerState.idle);
                     player.ChangeState(PlayerState.combatIdle);
                     return;
                 }
@@ -277,7 +227,7 @@ namespace FSM
             //Debug.Log("PlayerAttackEnter");
 
             animator = player.GetAnimator();
-            this.player.SetCurrentState(PlayerState.attack);
+            player.SetCurrentState(PlayerState.attack);
             animator.SetInteger("attack", 1);
         }
 
@@ -285,22 +235,10 @@ namespace FSM
         {
             //Debug.Log("PlayerAttackExcute");
 
-            if (player.GetInput().MoveInput)
+            if (player.GetInput().MoveInput && !attacking)
             {
-                RaycastHit click;
-
-                if (Physics.Raycast(player.GetMainCamera().ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
-                {
-                    if (click.transform.gameObject.CompareTag("NPC"))
-                    {
-                        return;
-                    }
-
-                    player.SetPosition(click.point);
-                    player.GetMouseManager().SetPos(click.point);
-                    player.GetMouseManager().SetMovePointer(true);
-                    player.ChangeState(PlayerState.running);
-                }
+                player.SetMousePoint();
+                player.ChangeState(PlayerState.running);
                 return;
             }
 
@@ -319,6 +257,8 @@ namespace FSM
 
             if (player.GetInput().AttackInput && !attacking)
             {
+                player.Turn();
+
                 animator.Play("DefaltAttack", -1, 0.1f);
                 return;
             }
@@ -383,8 +323,3 @@ namespace FSM
         }
     }
 }
-
-
-
-
-

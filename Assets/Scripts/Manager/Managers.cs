@@ -15,6 +15,9 @@ public class Managers : MonoBehaviour
     UIManager ui = new UIManager();
     public static UIManager UI { get { return Instance.ui; } }
 
+    SceneManagerEx scene = new SceneManagerEx();
+    public static SceneManagerEx Scene { get { return Instance.scene; } }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,12 @@ public class Managers : MonoBehaviour
             }
             DontDestroyOnLoad(go);
             instance = go.GetComponent<Managers>();
+            //instance.pool.Init();
         }
+    }
+
+    public static void Clear()
+    {
+        //Pool.Clear();
     }
 }

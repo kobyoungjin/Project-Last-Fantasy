@@ -13,5 +13,6 @@ public class Troll : Status
         attack = 5;
         defense = 5;
 
+        //Managers.UI.MakeWorldSpace<UI_HPBar>(transform);
     }
 }
