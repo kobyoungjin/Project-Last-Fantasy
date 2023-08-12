@@ -32,6 +32,7 @@ public class InputManager : MonoBehaviour
         //print("InputManager print"+moveInput);
         //if (Input.GetKeyDown(keyCode))
         //    keyCode = 
+        Debug.Log(pressed);
     }
     
     public void OnUpdate()
@@ -68,5 +69,9 @@ public class InputManager : MonoBehaviour
         }
     }
     
+    public bool GetIsPress()
+    {
+        return pressed;
+    }
 }
 

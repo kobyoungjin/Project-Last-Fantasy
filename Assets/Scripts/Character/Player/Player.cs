@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Player : Status
+    public class Player : MonoBehaviour
     {
         private InputManager inputManager;
         private Animator animator;
@@ -21,13 +21,36 @@ namespace FSM
 
         public PlayerState currentState;
         public PlayerState prevState;
+        Weapon weapon;
 
         private float turnSpeed = 300f;
         private bool isMove;
+        private bool isFireReady = false;
+
+        float fireDelay;
 
         protected int exp;
         protected int gold;
 
+        [SerializeField]
+        protected int level;
+        [SerializeField]
+        protected int hp;
+        [SerializeField]
+        protected int maxHp;
+        [SerializeField]
+        protected int attackDamage;
+        [SerializeField]
+        protected int defense;
+        [SerializeField]
+        protected float moveSpeed;
+
+        public int Level { get { return level; } set { level = value; } }
+        public int Hp { get { return hp; } set { hp = value; } }
+        public int MaxHp { get { return maxHp; } set { maxHp = value; } }
+        public int AttackDamage { get { return attackDamage; } set { attackDamage = value; } }
+        public int Defense { get { return defense; } set { defense = value; } }
+        public float MoveSpeed { get { return moveSpeed; } set { moveSpeed = value; } }
         public int Exp { get { return exp; } set { exp = value; } }
         public int Gold { get { return gold; } set { gold = value; } }
 
@@ -46,7 +69,7 @@ namespace FSM
             level = 1;
             hp = 100;
             maxHp = 100;
-            attack = 5;
+            attackDamage = 5;
             defense = 5;
             moveSpeed = 4.0f;
             exp = 0;
@@ -56,13 +79,16 @@ namespace FSM
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
             mouseManager = gameManager.GetComponent<MouseManager>();
-            
+            weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
+
             //gameManager.SetText(this.gameObject);
             Enter();
         }
 
         void Update()
         {
+            fireDelay += Time.deltaTime;
+
             Excute();
         }
 
@@ -148,8 +174,10 @@ namespace FSM
                     GetMouseManager().SetMovePointer(false);
                 }
                 else
-                {
-                    GetMouseManager().SetPos(click.point);
+                {   
+                    if(inputManager.GetIsPress() == false)
+                        GetMouseManager().SetPos(click.point);
+
                     GetMouseManager().SetMovePointer(true);
                 }
 
@@ -158,6 +186,20 @@ namespace FSM
                 {
                     return;
                 }
+            }
+        }
+
+        public void Attack()
+        {
+            if (weapon == null) return;
+
+            
+            isFireReady = weapon.rate < fireDelay;
+
+            if(isFireReady)  // 나중에 맞을때 조건 걸기
+            {
+                weapon.Use();
+                fireDelay = 0;
             }
         }
 

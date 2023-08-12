@@ -38,6 +38,7 @@ namespace FSM
             if (player.GetInput().AttackInput)
             {
                 player.Turn();
+                player.Attack();
                 player.ChangeState(PlayerState.attack);
                 return;
             }
@@ -97,6 +98,7 @@ namespace FSM
             if (player.GetInput().AttackInput)
             {
                 player.Turn();
+                player.Attack();
                 player.ChangeState(PlayerState.attack);
                 return;
             }
@@ -167,7 +169,7 @@ namespace FSM
             if (player.GetInput().AttackInput)
             {
                 player.Turn();
-
+                player.Attack();
                 player.ChangeState(PlayerState.attack);
                 return;
             }
@@ -258,7 +260,7 @@ namespace FSM
             if (player.GetInput().AttackInput && !attacking)
             {
                 player.Turn();
-
+                player.Attack();
                 animator.Play("DefaltAttack", -1, 0.1f);
                 return;
             }

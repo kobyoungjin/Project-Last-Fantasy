@@ -9,6 +9,7 @@ TagManager:
   - Monster
   - Enemy
   - MovePoint
+  - Melee
   layers:
   - Default
   - TransparentFX

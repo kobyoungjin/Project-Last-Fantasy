@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public enum Type { Melee, Range };
+    public enum Type { Melee, Range };  // 근접, 원거리
     public Type type;
     public int damage;
-    public float rate;
+    public float rate;  // 공격속도
     public BoxCollider meleeArea;
     public TrailRenderer trailEffect;
 
@@ -21,18 +21,15 @@ public class Weapon : MonoBehaviour
     }
     IEnumerator Swing()
     {
-        //1
         yield return new WaitForSeconds(0.1f);
         meleeArea.enabled = true;
         trailEffect.enabled = true;
-        //2
-        yield return new WaitForSeconds(0.3f);
+
+        yield return new WaitForSeconds(0.2f);
         meleeArea.enabled = false;
-        //3
-        yield return new WaitForSeconds(0.3f);
+
+        yield return new WaitForSeconds(0.2f);
         trailEffect.enabled = false;
     }
-    //Use() 메인루틴 -> Swing() 서브루틴 -> Use() 메인루틴
-    //Use() 메인루틴 + Swing() 코루틴 (Co-Op)
 }
 
