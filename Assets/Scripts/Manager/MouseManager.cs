@@ -46,8 +46,8 @@ public class MouseManager : MonoBehaviour
         movePoint = GameObject.FindGameObjectWithTag("MovePoint").gameObject;
         movePoint.SetActive(false);
 
-        Managers.Input.MouseAction -= OnMouseClicked;
-        Managers.Input.MouseAction += OnMouseClicked;
+        //Managers.Input.MouseAction -= OnMouseClicked;
+        //Managers.Input.MouseAction += OnMouseClicked;
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
     }

@@ -16,6 +16,9 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public SharedGameObject enemy;
 
         public SharedString animationName;
+        private bool isFireReady = false;
+        Weapon weapon;
+        float fireDelay;
 
         private bool triggered = false;
 
@@ -24,25 +27,25 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             animator = gameObject.GetComponent<Animator>();
         }
 
+        public override void OnStart()
+        {
+            weapon = enemy.Value.transform.Find("bone").GetComponent<Weapon>();
+        }
+
         public override TaskStatus OnUpdate()
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("attack 1") &&
-               animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            if (weapon == null) return TaskStatus.Failure;
+            fireDelay += Time.deltaTime;
+
+            isFireReady = weapon.rate < fireDelay;
+
+            if (isFireReady)  // 나중에 맞을때 조건 걸기
             {
-                //CancelAttack();
-                return TaskStatus.Running;
+                weapon.Use();
+                fireDelay = 0;
+                return TaskStatus.Success;
             }
-
-
-            //  CancelAttack();
-            //  triggered = false;
-            //return TaskStatus.Success;
-            //}
-            animator.SetInteger("battle", 0);
-            //CancelAttack();
-            //OnAttack(force.Value);
-            // triggered = true;
-            return TaskStatus.Success;
+            return TaskStatus.Running;
         }
 
         public void CancelAttack()

@@ -29,10 +29,13 @@ namespace FSM
             //Debug.Log(player.GetInput().MoveInput);
             if (player.GetInput().MoveInput)
             {
-                player.SetMousePoint();
-                player.ChangeState(PlayerState.running);
-                return;
-
+                RaycastHit click;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
+                {
+                    player.SetMousePoint(click);
+                    player.ChangeState(PlayerState.running);
+                    return;
+                }
             }
 
             if (player.GetInput().AttackInput)
@@ -85,11 +88,15 @@ namespace FSM
         public override void Excute()
         {
             //Debug.Log("PlayerCombatIdleExcute");
-
+            
             if (player.GetInput().MoveInput)
             {
-                player.SetMousePoint();
-                player.ChangeState(PlayerState.running);
+                RaycastHit click;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
+                {
+                    player.SetMousePoint(click);
+                    player.ChangeState(PlayerState.running);
+                }
 
                 return;
             }
@@ -139,7 +146,7 @@ namespace FSM
     {
         private Player player;
         private Animator animator;
-
+        private bool isMonster = false;
         public PlayerRunning(Player owner)
         {
             this.player = owner;
@@ -162,7 +169,13 @@ namespace FSM
 
             if (player.GetInput().MoveInput)
             {
-                player.SetMousePoint();
+                RaycastHit click;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
+                {
+                    player.SetMousePoint(click);
+                    if (click.transform.gameObject.CompareTag("Monster"))
+                        isMonster = true;
+                }
                 return;
             }
 
@@ -185,11 +198,21 @@ namespace FSM
         {
             if (player.GetIsMove())
             {
-                if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
+                if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f && isMonster)
                 {
+                    isMonster = false;
                     player.SetIsMove(false);
                     player.GetMouseManager().SetMovePointer(false);
+                    player.ChangeState(PlayerState.attack);
+
+                    return;
+                }
+                else if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
+                {
+                    player.SetIsMove(false);
+                    player.GetMouseManager().SetMovePointer(false);                   
                     player.ChangeState(PlayerState.combatIdle);
+
                     return;
                 }
             }
@@ -236,11 +259,14 @@ namespace FSM
         public override void Excute()
         {
             //Debug.Log("PlayerAttackExcute");
-
             if (player.GetInput().MoveInput && !attacking)
             {
-                player.SetMousePoint();
-                player.ChangeState(PlayerState.running);
+                RaycastHit click;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
+                {
+                    player.SetMousePoint(click);
+                    player.ChangeState(PlayerState.running);
+                }
                 return;
             }
 

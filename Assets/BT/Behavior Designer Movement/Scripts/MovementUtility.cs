@@ -263,7 +263,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 #if UNITY_EDITOR
             var oldColor = UnityEditor.Handles.color;
             var color = Color.green;
-            color.a = 0.1f;
+            color.a = 0.01f;
             UnityEditor.Handles.color = color;
 
             var halfFOV = fieldOfViewAngle * 0.5f + angleOffset;

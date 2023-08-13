@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Player : MonoBehaviour
+    public class Player : Status
     {
         private InputManager inputManager;
         private Animator animator;
@@ -15,7 +15,7 @@ namespace FSM
         private Vector3 destination;
         private RaycastHit click;
         private Rigidbody playerRigidbody;
-               
+
         public StateMachine<Player> currentFSM;
         public BaseState<Player>[] arrState = new BaseState<Player>[(int)PlayerState.end];
 
@@ -25,32 +25,33 @@ namespace FSM
 
         private float turnSpeed = 300f;
         private bool isMove;
+        private bool goAttack = false;
         private bool isFireReady = false;
-
+        
         float fireDelay;
 
         protected int exp;
         protected int gold;
 
-        [SerializeField]
-        protected int level;
-        [SerializeField]
-        protected int hp;
-        [SerializeField]
-        protected int maxHp;
-        [SerializeField]
-        protected int attackDamage;
-        [SerializeField]
-        protected int defense;
-        [SerializeField]
-        protected float moveSpeed;
+        //[SerializeField]
+        //protected int level;
+        //[SerializeField]
+        //protected int hp;
+        //[SerializeField]
+        //protected int maxHp;
+        //[SerializeField]
+        //protected int attackDamage;
+        //[SerializeField]
+        //protected int defense;
+        //[SerializeField]
+        //protected float moveSpeed;
 
-        public int Level { get { return level; } set { level = value; } }
-        public int Hp { get { return hp; } set { hp = value; } }
-        public int MaxHp { get { return maxHp; } set { maxHp = value; } }
-        public int AttackDamage { get { return attackDamage; } set { attackDamage = value; } }
-        public int Defense { get { return defense; } set { defense = value; } }
-        public float MoveSpeed { get { return moveSpeed; } set { moveSpeed = value; } }
+        //public int Level { get { return level; } set { level = value; } }
+        //public int Hp { get { return hp; } set { hp = value; } }
+        //public int MaxHp { get { return maxHp; } set { maxHp = value; } }
+        //public int AttackDamage { get { return attackDamage; } set { attackDamage = value; } }
+        //public int Defense { get { return defense; } set { defense = value; } }
+        //public float MoveSpeed { get { return moveSpeed; } set { moveSpeed = value; } }
         public int Exp { get { return exp; } set { exp = value; } }
         public int Gold { get { return gold; } set { gold = value; } }
 
@@ -60,18 +61,19 @@ namespace FSM
         }
 
         void Awake()
-        { 
+        {
             this.playerRigidbody = GetComponent<Rigidbody>();
-        }          
+        }
 
         void Start()
         {
             level = 1;
             hp = 100;
             maxHp = 100;
-            attackDamage = 5;
+            attackDamage = 30;
             defense = 5;
             moveSpeed = 4.0f;
+            rate = 0.4f;
             exp = 0;
             gold = 0;
 
@@ -110,7 +112,7 @@ namespace FSM
 
             currentFSM.SetState(arrState[(int)PlayerState.idle], this);
         }
-       
+
         // 스테이트 바꿔주는 함수
         public void ChangeState(PlayerState nextState)
         {
@@ -164,28 +166,25 @@ namespace FSM
             transform.LookAt(targetPos);
         }
 
-        public void SetMousePoint()
+        public void SetMousePoint(RaycastHit click)
         {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out click))  // 클릭한 지점 레이케스트
+            SetPosition(click.point);
+            if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
-                SetPosition(click.point);
-                if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
-                {
-                    GetMouseManager().SetMovePointer(false);
-                }
-                else
-                {   
-                    if(inputManager.GetIsPress() == false)
-                        GetMouseManager().SetPos(click.point);
+                GetMouseManager().SetMovePointer(false);
+            }
+            else
+            {
+                if (inputManager.GetIsPress() == false)
+                    GetMouseManager().SetPos(click.point);
 
-                    GetMouseManager().SetMovePointer(true);
-                }
+                GetMouseManager().SetMovePointer(true);
+            }
 
-                float distance = Vector3.Distance(this.transform.position, destination);
-                if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.2f)
-                {
-                    return;
-                }
+            float distance = Vector3.Distance(this.transform.position, destination);
+            if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.2f)
+            {
+                return;
             }
         }
 
@@ -193,10 +192,10 @@ namespace FSM
         {
             if (weapon == null) return;
 
-            
+
             isFireReady = weapon.rate < fireDelay;
 
-            if(isFireReady)  // 나중에 맞을때 조건 걸기
+            if (isFireReady)  // 나중에 맞을때 조건 걸기
             {
                 weapon.Use();
                 fireDelay = 0;
@@ -223,7 +222,7 @@ namespace FSM
         {
             return animator;
         }
-        
+
         public void SetCurrentState(PlayerState newState)
         {
             currentState = newState;
@@ -248,7 +247,7 @@ namespace FSM
         {
             return mouseManager;
         }
-    }        
+    }
 }
 
 

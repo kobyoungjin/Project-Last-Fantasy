@@ -15,6 +15,7 @@ namespace BehaviorDesigner.Runtime.Tasks
 
         public override TaskStatus OnUpdate()
         {
+            Debug.Log(enteredTrigger);
             return enteredTrigger ? TaskStatus.Success : TaskStatus.Failure;
         }
 
