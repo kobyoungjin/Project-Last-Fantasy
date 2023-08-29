@@ -9,6 +9,7 @@ public class Troll : Status
     Animator animator;
     GameObject player;
     NavMeshAgent navMeshAgent;
+    bool isAlive = true;
     
     private void Start()
     {
@@ -22,16 +23,18 @@ public class Troll : Status
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player");
         navMeshAgent = transform.GetComponent<NavMeshAgent>();
-        //Managers.UI.MakeWorldSpace<UI_HPBar>(transform);
+        Managers.UI.Make3D_UI<UI_HPBar>(transform);
     }
 
     private void Update()
     {
-        if(hp <= 0)
+        if(hp <= 0 && isAlive)
         {
+            hp = 0;
             Dead();
 
-            Destroy(this.gameObject);
+            StopCoroutine("Destroy");
+            StartCoroutine("Destroy");
         }
     }
 
@@ -40,11 +43,20 @@ public class Troll : Status
         transform.LookAt(player.transform);
         
         hp -= (int)attack;
+
+    }
+
+    IEnumerator Destroy()
+    {
+        yield return new WaitForSeconds(2.5f);
+        Destroy(this.gameObject);
     }
 
     public void Dead()
     {
+        isAlive = false;
         navMeshAgent.isStopped = true;
+        transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
         animator.SetTrigger("dead");
     }
  

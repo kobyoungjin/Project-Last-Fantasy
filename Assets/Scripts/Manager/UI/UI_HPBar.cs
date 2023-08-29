@@ -1,45 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityAnimator
+public class UI_HPBar : UI_Base
 {
-    public class UI_HPBar : UI_Base
+    enum GameObjects
     {
-        enum GameObjects
-        {
-            HPBar,
-        }
+        HPBar,
+    }
 
-        Status status;
-        public virtual void Init()
-        {
-            Bind<GameObject>(typeof(GameObject));
-            status = transform.parent.GetComponent<Status>();
-        }
-        void Start()
-        {
-            Init();
+    Status status;
+    public virtual void Init()
+    {
+        Bind<GameObject>(typeof(GameObjects));
+        status = transform.parent.GetComponent<Status>();
+    }
+    void Start()
+    {
+        Init();
 
-            Debug.Log(transform.parent.name);
-        }
+        Debug.Log(transform.parent.name);
+    }
 
-        void Update()
+    void Update()
+    {
+        Transform parent = gameObject.transform.parent;
+        if (transform.parent.name == "Troll_model")
+            transform.position = parent.position + Vector3.up * (transform.parent.GetChild(2).GetComponent<Collider>().bounds.size.y);
+        else
+            transform.position = parent.position + Vector3.up * parent.GetComponent<Collider>().bounds.size.y;
+
+        transform.rotation = Camera.main.transform.rotation;  // 빌보드
+
+        float ratio = status.Hp / (float)status.MaxHp;
+        if(ratio <= 0)
         {
-            Transform parent = transform.parent;
-            if (transform.parent.name == "Troll_model")
-                transform.position = parent.position + Vector3.up * (transform.parent.GetChild(2).GetComponent<UnityEngine.Collider>().bounds.size.y);
-            else
-                transform.position = parent.position + Vector3.up * parent.GetComponent<UnityEngine.Collider>().bounds.size.y;
-            transform.rotation = Camera.main.transform.rotation;  // 빌보드
-
-            float ratio = status.Hp / (float)status.MaxHp;
-            SetHpRatio(ratio);  // 슬라이더 값 매 프레임마다 갱신
+            ratio = 0;
+            Destroy(gameObject);
         }
+        SetHpRatio(ratio);  // 슬라이더 값 매 프레임마다 갱신
+    }
 
-        public void SetHpRatio(float ratio)
-        {
-            //GetObject((int)GameObjects.HPBar).GetComponent<Slider>().value = ratio;
-        }
+    public void SetHpRatio(float ratio)
+    {
+        GetObject((int)GameObjects.HPBar).GetComponent<Slider>().value = ratio;
     }
 }
