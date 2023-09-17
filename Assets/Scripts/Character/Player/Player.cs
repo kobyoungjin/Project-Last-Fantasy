@@ -82,7 +82,7 @@ namespace FSM
             inputManager = gameManager.GetComponent<InputManager>();
             mouseManager = gameManager.GetComponent<MouseManager>();
             weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
-
+            Managers.UI.Make3D_UI<UI_HPBar>(transform);
             //gameManager.SetText(this.gameObject);
             Enter();
         }

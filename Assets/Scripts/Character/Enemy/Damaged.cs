@@ -7,6 +7,7 @@ namespace BehaviorDesigner.Runtime.Tasks
     public class Damaged : Action
     {
         Animator animator;
+        public SharedInt hp;
 
         public override void OnStart()
         {
@@ -14,7 +15,16 @@ namespace BehaviorDesigner.Runtime.Tasks
         }
         public override TaskStatus OnUpdate()
         {
-            return TaskStatus.Success;
+            hp = this.GetComponent<Troll>().Hp;
+            Debug.Log(hp);
+            if(hp.Value <= 0)
+            {
+                this.GetComponent<BehaviorTree>().enabled = false;
+                return TaskStatus.Success;
+            }
+                
+
+            return TaskStatus.Failure;
         }
         public override void OnTriggerEnter(Collider other)
         {

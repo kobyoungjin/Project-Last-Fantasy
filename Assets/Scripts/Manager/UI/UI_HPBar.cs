@@ -19,8 +19,6 @@ public class UI_HPBar : UI_Base
     void Start()
     {
         Init();
-
-        Debug.Log(transform.parent.name);
     }
 
     void Update()
