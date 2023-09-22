@@ -13,9 +13,13 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     InputManager input = new InputManager();
     public static InputManager Input { get { return Instance.input; } }
 
+    private Troll troll;
+
     void Start()
     {
         Init();
+
+        troll = GameObject.Find("Troll_model").GetComponent<Troll>();
     }
 
     void Update()
@@ -60,5 +64,10 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         textObj.transform.SetParent(obj.transform);
 
         textObj.AddComponent<FloatingText>();
+    }
+
+    public Troll GetTrollScript()
+    {
+        return troll;
     }
 }

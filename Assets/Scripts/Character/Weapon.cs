@@ -16,7 +16,7 @@ public class Weapon : MonoBehaviour
     private void Start()
     { 
         temp = LayerMask.LayerToName(this.gameObject.layer);
-        if (this.gameObject.transform.parent.name == "Troll_model")
+        if (this.gameObject.transform.root.name == "Troll")
             temp = "Troll";
     }
     public void Use()

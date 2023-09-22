@@ -16,7 +16,7 @@ namespace BehaviorDesigner.Runtime.Tasks
         public override TaskStatus OnUpdate()
         {
             hp = this.GetComponent<Troll>().Hp;
-            Debug.Log(hp);
+            //Debug.Log(hp);
             if(hp.Value <= 0)
             {
                 this.GetComponent<BehaviorTree>().enabled = false;

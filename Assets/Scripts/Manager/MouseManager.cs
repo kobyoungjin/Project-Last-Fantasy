@@ -61,7 +61,7 @@ public class MouseManager : MonoBehaviour
     // outline 강조해주는 함수
     void AddOutline(Transform obj, float width, Color color)
     {
-        if (obj == null) return;
+        if (obj == null || obj.name == "weapon_end") return;
 
         renderers = obj.GetComponent<Renderer>();
         renderers.sharedMaterial.SetFloat("_OutLineWidth", width);

@@ -92,6 +92,8 @@ namespace FSM
             fireDelay += Time.deltaTime;
 
             Excute();
+
+            //Debug.Log(this.hp);
         }
 
         private void FixedUpdate()
@@ -246,6 +248,22 @@ namespace FSM
         public MouseManager GetMouseManager()
         {
             return mouseManager;
+        }
+
+        public void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
+            {
+                switch (other.transform.root.name)
+                {
+                    case "Troll":
+                        Troll troll = gameManager.GetTrollScript();
+                        this.hp -= (int)(troll.AttackDamage * 0.3);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

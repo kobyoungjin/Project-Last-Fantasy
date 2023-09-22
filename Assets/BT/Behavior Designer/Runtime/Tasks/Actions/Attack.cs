@@ -29,7 +29,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override void OnStart()
         {
-            weapon = enemy.Value.transform.Find("bone").GetComponent<Weapon>();
+            weapon = enemy.Value.transform.Find("troll/base/hips/spine/chest/upper_arm.R/forearm.R/hand.R/weapon/weapon_end").GetComponent<Weapon>();
+            //Debug.Log(weapon.name);
         }
 
         public override TaskStatus OnUpdate()
@@ -43,8 +44,11 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             {
                 weapon.Use();
                 fireDelay = 0;
+                enemy.Value.GetComponent<NavMeshAgent>().isStopped = false;
                 return TaskStatus.Success;
             }
+            enemy.Value.GetComponent<NavMeshAgent>().isStopped = true;
+
             return TaskStatus.Running;
         }
 

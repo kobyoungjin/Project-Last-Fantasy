@@ -15,7 +15,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public override TaskStatus OnUpdate()
         {
             Animator animator = gameObject.GetComponent<Animator>();
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f
+                &&animator.GetCurrentAnimatorStateInfo(0).IsName("attack1"))
             {
                 return TaskStatus.Running;
             }

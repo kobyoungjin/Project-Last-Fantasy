@@ -12,7 +12,6 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public SharedGameObject target;
         [Tooltip("If target is null then use the target position")]
         public SharedVector3 targetPosition;
-        
         public override void OnStart()
         {
             base.OnStart();
