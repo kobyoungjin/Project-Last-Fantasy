@@ -27,7 +27,7 @@ namespace FSM
         private bool isMove;
         private bool goAttack = false;
         private bool isFireReady = false;
-        
+
         float fireDelay;
 
         protected int exp;
@@ -84,6 +84,7 @@ namespace FSM
             weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
             Managers.UI.Make3D_UI<UI_HPBar>(transform);
             //gameManager.SetText(this.gameObject);
+
             Enter();
         }
 
@@ -171,21 +172,19 @@ namespace FSM
         public void SetMousePoint(RaycastHit click)
         {
             SetPosition(click.point);
+
+            GetMouseManager().SetPos(destination);
+            
             if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
                 GetMouseManager().SetMovePointer(false);
             }
-            else
-            {
-                if (inputManager.GetIsPress() == false)
-                    GetMouseManager().SetPos(click.point);
-
-                GetMouseManager().SetMovePointer(true);
-            }
+   
 
             float distance = Vector3.Distance(this.transform.position, destination);
-            if (click.transform.gameObject.CompareTag("NPC") && distance <= 0.2f)
+            if (click.transform.gameObject.CompareTag("NPC") && distance <= 1.0f)
             {
+                isMove = false;
                 return;
             }
         }
@@ -194,6 +193,7 @@ namespace FSM
         {
             if (weapon == null) return;
 
+            Turn();
 
             isFireReady = weapon.rate < fireDelay;
 

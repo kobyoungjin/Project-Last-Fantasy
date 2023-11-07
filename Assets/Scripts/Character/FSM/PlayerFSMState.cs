@@ -8,6 +8,7 @@ namespace FSM
     {
         private Player player;
         private Animator animator;
+        private MouseManager mouseManager;
 
         public PlayerIdle(Player owner)
         {
@@ -19,6 +20,7 @@ namespace FSM
             //Debug.Log("PlayerIdleEnter");
 
             animator = player.GetAnimator();
+            mouseManager = player.GetMouseManager();
             this.player.SetCurrentState(PlayerState.idle);
             animator.SetInteger("idle", 0);
         }
@@ -40,7 +42,6 @@ namespace FSM
 
             if (player.GetInput().AttackInput)
             {
-                player.Turn();
                 player.Attack();
                 player.ChangeState(PlayerState.attack);
                 return;
@@ -88,7 +89,7 @@ namespace FSM
         public override void Excute()
         {
             //Debug.Log("PlayerCombatIdleExcute");
-            
+
             if (player.GetInput().MoveInput)
             {
                 RaycastHit click;
@@ -104,7 +105,6 @@ namespace FSM
             // 공격
             if (player.GetInput().AttackInput)
             {
-                player.Turn();
                 player.Attack();
                 player.ChangeState(PlayerState.attack);
                 return;
@@ -181,7 +181,6 @@ namespace FSM
 
             if (player.GetInput().AttackInput)
             {
-                player.Turn();
                 player.Attack();
                 player.ChangeState(PlayerState.attack);
                 return;
@@ -196,25 +195,21 @@ namespace FSM
 
         public override void PhysicsExcute()  // 이동 함수
         {
-            if (player.GetIsMove())
+            if (player.GetIsMove() && Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
             {
-                if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f && isMonster)
+                player.GetMouseManager().SetMovePointer(false);
+                player.SetIsMove(false);
+
+                if (isMonster)
                 {
                     isMonster = false;
-                    player.SetIsMove(false);
-                    player.GetMouseManager().SetMovePointer(false);
                     player.ChangeState(PlayerState.attack);
-
                     return;
                 }
-                else if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
-                {
-                    player.SetIsMove(false);
-                    player.GetMouseManager().SetMovePointer(false);                   
-                    player.ChangeState(PlayerState.combatIdle);
 
-                    return;
-                }
+                player.ChangeState(PlayerState.combatIdle);
+
+                return;
             }
 
             var pos = player.GetTargetPosition() - player.transform.position;
@@ -285,7 +280,6 @@ namespace FSM
 
             if (player.GetInput().AttackInput && !attacking)
             {
-                player.Turn();
                 player.Attack();
                 animator.Play("DefaltAttack", -1, 0.1f);
                 return;

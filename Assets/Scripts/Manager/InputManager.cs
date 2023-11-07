@@ -45,7 +45,7 @@ public class InputManager : MonoBehaviour
 
         if (MouseAction != null)
         {
-            if (Input.GetMouseButton(0)) // PointerDown -> Press
+            if (Input.GetMouseButton(1)) // PointerDown -> Press
             {
                 if (!pressed) // 한번도 눌렀던적이 없었는데 클릭 들어온거면 
                 {
@@ -69,6 +69,11 @@ public class InputManager : MonoBehaviour
         }
     }
     
+    public void Clear()
+    {
+        MouseAction = null;
+    }
+
     public bool GetIsPress()
     {
         return pressed;

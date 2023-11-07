@@ -21,7 +21,6 @@ public class MouseManager : MonoBehaviour
 
     CursorType cursorType = CursorType.None;
 
-    InputManager inputManager;
     NPCDialogue npcDialogue;
     Renderer renderers;
     Transform selectedTarget;
@@ -31,6 +30,7 @@ public class MouseManager : MonoBehaviour
     public Texture2D defaultIcon;
 
     Vector3 pos;
+    Vector3 TargetPos;
     float delta = 0.5f; // 최대이동 거리
     float speed = 3.0f; // 이동속도
 
@@ -40,16 +40,18 @@ public class MouseManager : MonoBehaviour
     void Start()
     {
         //npcDialogue = GameObject.FindObjectOfType<NPCDialogue>().GetComponent<NPCDialogue>();
-        attackIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Attack");
-        handIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Hand");
-        defaultIcon = Managers.Resource.Load<Texture2D>("Cursors/Used/Default");
+        attackIcon = Managers.Resource.Load<Texture2D>("TrackingMap/Cursors/Used/Attack");
+        handIcon = Managers.Resource.Load<Texture2D>("TrackingMap/Cursors/Used/Hand");
+        defaultIcon = Managers.Resource.Load<Texture2D>("TrackingMap/Cursors/Used/Default");
         movePoint = GameObject.FindGameObjectWithTag("MovePoint").gameObject;
         movePoint.SetActive(false);
 
         //Managers.Input.MouseAction -= OnMouseClicked;
         //Managers.Input.MouseAction += OnMouseClicked;
+                
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
+        
     }
 
     void Update()
@@ -98,14 +100,10 @@ public class MouseManager : MonoBehaviour
 
     void UpdateMovePoint()
     {
-     
-        Vector3 v = pos;
-        v.y = 1.0f;
-        v.y -= delta * Mathf.Sin(Time.time * speed);
+        Vector3 v = TargetPos;
+        v.y = 0;
 
         movePoint.transform.position = v;
-        movePoint.transform.Rotate(new Vector3(0, rotateSpeed * Time.deltaTime, 0));
-
     }
     public void SetPos(Vector3 pos)
     {
@@ -114,6 +112,11 @@ public class MouseManager : MonoBehaviour
 
     public void SetMovePointer(bool movePoint)
     {
+        if (!movePoint)
+            this.movePoint.GetComponent<ParticleSystem>().Stop();
+        else
+            this.movePoint.GetComponent<ParticleSystem>().Play();
+
         this.movePoint.SetActive(movePoint);
     }
 
@@ -165,49 +168,42 @@ public class MouseManager : MonoBehaviour
         if (state == PlayerState.die)
             return;
 
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool raycastHit = Physics.Raycast(ray, out hit, 100.0f, mask);
-
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
                 {
-                    if (raycastHit)
-                    {
-                        destPos = hit.point;
-                        state = PlayerState.running;
-
-                        if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
-                        {
-                            lockTarget = hit.collider.gameObject;
-                        }
-                        else
-                        {
-                            lockTarget = null;
-                        }
-                    }
+                    TargetPos = pos;
+                    SetMovePointer(true);
+                }
+                break;
+            case Define.MouseEvent.Click:
+                {
+                    //SetMovePointer(false);
                 }
                 break;
             case Define.MouseEvent.Press:
                 {
-                    if (lockTarget != null)
-                        destPos = lockTarget.transform.position;
-                    else if (raycastHit)
-                        destPos = hit.point;
-
-                    SetMovePointer(false);
+                    //SetMovePointer(false);
                 }
                 break;
         }
     }
     void OnMouseClicked(Define.MouseEvent evt)
     {
-        if (evt != Define.MouseEvent.Click)
-            return;
-
+        
         if (state == PlayerState.die)
             return;
+                      
+
+        if (evt == Define.MouseEvent.PointerDown)
+        {
+            
+            return;
+        }
+        else if(evt == Define.MouseEvent.Press)
+        {
+            
+        }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
