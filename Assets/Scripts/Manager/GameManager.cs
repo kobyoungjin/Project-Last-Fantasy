@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 {
@@ -15,16 +16,57 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
     private Troll troll;
 
+    public MouseManager mouseManager;
+    public TalkManager talkManager;
+    public QuestManager questManager;
+    public GameObject talkPanel;
+    public Text talkText;
+    public GameObject obj;
+    public bool isAction;
+    public int talkIndex;
+
     void Start()
     {
         Init();
 
-        troll = GameObject.Find("Troll_model").GetComponent<Troll>();
+        troll = GameObject.Find("Troll/Troll_model").GetComponent<Troll>();
+        talkManager = GetComponent<TalkManager>();
+        mouseManager = GetComponent<MouseManager>();
+        talkPanel = GameObject.Find("TalkCanvas").transform.GetChild(0).gameObject;
+        talkText = talkPanel.GetComponentInChildren<Text>();
     }
 
     void Update()
     {
         input.OnUpdate();
+    }
+
+    public void Action(GameObject obj)
+    {
+        this.obj = obj;
+        NPC npc = obj.GetComponent<NPC>();
+
+        //Debug.Log(obj.name);
+
+        Talk(npc.id, npc.isNpc);
+
+        talkPanel.SetActive(isAction);
+    }
+
+    void Talk(int id, bool isNpc)
+    {
+        string talkData = talkManager.GetTalk(id, talkIndex);
+
+        if(talkData == null)
+        {
+            isAction = false;
+            talkIndex = 0;
+            return;
+        }
+             
+        talkText.text = talkData;
+        isAction = true;
+        talkIndex++;
     }
 
     static void Init()
@@ -46,12 +88,12 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public void SetText(GameObject obj)
     {
         GameObject textObj = new GameObject("text");
-        
+
         textObj.AddComponent<TextMeshProUGUI>();
         textObj.GetComponent<TextMeshProUGUI>().text = obj.name;
         RectTransform rectTrans = textObj.GetComponent<RectTransform>();
         rectTrans.sizeDelta = new Vector2(obj.name.Length * 20, 40);
-        if(obj.name.Length < 6) rectTrans.sizeDelta = new Vector2(obj.name.Length * 30, 40);
+        if (obj.name.Length < 6) rectTrans.sizeDelta = new Vector2(obj.name.Length * 30, 40);
         textObj.GetComponent<TextMeshProUGUI>().fontSize = 36;
         textObj.GetComponent<TextMeshProUGUI>().color = Color.black;
         textObj.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Midline;

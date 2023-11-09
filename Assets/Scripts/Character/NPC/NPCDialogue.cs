@@ -22,10 +22,10 @@ public class NPCDialogue : MonoBehaviour
 
     void Update()
     {
-        if(inputManager.QuitInput)
-        {
-            ChangeCamera(dialogueCamera, mainCamera);
-        }
+        //if(inputManager.QuitInput)
+        //{
+        //    ChangeCamera(dialogueCamera, mainCamera);
+        //}
 
         if (Input.GetKeyDown(KeyCode.D))
             isOpen = false;

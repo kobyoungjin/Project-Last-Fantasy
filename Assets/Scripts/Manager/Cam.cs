@@ -53,7 +53,7 @@ public class Cam : MonoBehaviour
         }
         
 
-        //CalculateZoom();
+        CalculateZoom();
     }
 
     void CalculateZoom()

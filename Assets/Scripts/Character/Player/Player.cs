@@ -76,6 +76,7 @@ namespace FSM
             rate = 0.4f;
             exp = 0;
             gold = 0;
+            isMove = true;
 
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
@@ -94,7 +95,14 @@ namespace FSM
 
             Excute();
 
-            //Debug.Log(this.hp);
+            if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
+            {
+                gameManager.talkPanel.SetActive(false);
+                SetIsMove(true);
+                gameManager.isAction = false;
+            }
+
+            Debug.Log(isMove);
         }
 
         private void FixedUpdate()
@@ -172,19 +180,27 @@ namespace FSM
         public void SetMousePoint(RaycastHit click)
         {
             SetPosition(click.point);
-
+            //Debug.Log(click.point);
             GetMouseManager().SetPos(destination);
             
-            if (click.collider.gameObject.layer == (int)Define.Layer.Monster || click.collider.gameObject.layer == (int)Define.Layer.NPC)
+            if (click.collider.gameObject.layer == (int)Define.Layer.Monster)
             {
                 GetMouseManager().SetMovePointer(false);
             }
-   
 
-            float distance = Vector3.Distance(this.transform.position, destination);
+            if (click.collider.gameObject.layer == (int)Define.Layer.NPC)
+            {
+                //SetIsMove(false);
+                gameManager.Action(click.collider.transform.parent.gameObject);
+                GetMouseManager().SetMovePointer(false);
+            }
+
+
+                float distance = Vector3.Distance(this.transform.position, destination);
             if (click.transform.gameObject.CompareTag("NPC") && distance <= 1.0f)
             {
-                isMove = false;
+                //gameManager.Action(click.collider.gameObject);
+                SetIsMove(false);
                 return;
             }
         }
@@ -204,11 +220,13 @@ namespace FSM
             }
         }
 
+#region get, set함수
+
         // 마우스 좌표 설정함수
         public void SetPosition(Vector3 pos)
         {
             destination = pos;
-            isMove = true;
+            SetIsMove(true);
         }
 
         public Vector3 GetTargetPosition()
@@ -223,6 +241,11 @@ namespace FSM
         public Animator GetAnimator()
         {
             return animator;
+        }
+
+        public GameManager GetGameManager()
+        {
+            return gameManager;
         }
 
         public void SetCurrentState(PlayerState newState)
@@ -242,6 +265,11 @@ namespace FSM
 
         public void SetIsMove(bool isMove)
         {
+            if (!isMove)
+                this.animator.StopPlayback();
+            //else
+            //    this.animator.StartPlayback();
+
             this.isMove = isMove;
         }
 
@@ -249,6 +277,8 @@ namespace FSM
         {
             return mouseManager;
         }
+
+#endregion
 
         public void OnTriggerEnter(Collider other)
         {

@@ -6,11 +6,16 @@ public class NPC : MonoBehaviour
 {
     GameManager gameManager;
     bool isExit = false;
+
+    public int id;
+    public bool isNpc;
+
     void Start()
     {
         gameManager = GameObject.FindObjectOfType<GameManager>().GetComponent<GameManager>();
 
         //gameManager.SetText(this.gameObject);
+        this.transform.GetChild(1).GetComponent<Renderer>().sharedMaterial.SetFloat("_OutLineWidth", 0);
     }
 
     // Update is called once per frame

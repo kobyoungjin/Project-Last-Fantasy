@@ -8,7 +8,6 @@ namespace FSM
     {
         private Player player;
         private Animator animator;
-        private MouseManager mouseManager;
 
         public PlayerIdle(Player owner)
         {
@@ -20,7 +19,6 @@ namespace FSM
             //Debug.Log("PlayerIdleEnter");
 
             animator = player.GetAnimator();
-            mouseManager = player.GetMouseManager();
             this.player.SetCurrentState(PlayerState.idle);
             animator.SetInteger("idle", 0);
         }
@@ -29,6 +27,9 @@ namespace FSM
         {
             //Debug.Log("PlayerIdleExcute");
             //Debug.Log(player.GetInput().MoveInput);
+            if (player.GetIsMove() == false)
+                return;
+
             if (player.GetInput().MoveInput)
             {
                 RaycastHit click;
@@ -89,6 +90,8 @@ namespace FSM
         public override void Excute()
         {
             //Debug.Log("PlayerCombatIdleExcute");
+            if (player.GetIsMove() == false)
+                return;
 
             if (player.GetInput().MoveInput)
             {
@@ -147,6 +150,7 @@ namespace FSM
         private Player player;
         private Animator animator;
         private bool isMonster = false;
+        MouseManager mouseManager;
         public PlayerRunning(Player owner)
         {
             this.player = owner;
@@ -157,7 +161,7 @@ namespace FSM
             //Debug.Log("PlayerRunningEnter");
 
             animator = player.GetAnimator();
-
+            mouseManager = player.GetMouseManager();
             player.SetCurrentState(PlayerState.running);
             animator.SetInteger("run", 1);
             animator.SetBool("move", true);
@@ -166,6 +170,8 @@ namespace FSM
         public override void Excute()
         {
             //Debug.Log("PlayerRunningExcute");
+            if (player.GetIsMove() == false)
+                return;
 
             if (player.GetInput().MoveInput)
             {
@@ -195,10 +201,9 @@ namespace FSM
 
         public override void PhysicsExcute()  // 이동 함수
         {
-            if (player.GetIsMove() && Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 0.1f)
+            if (player.GetIsMove() && Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f)
             {
                 player.GetMouseManager().SetMovePointer(false);
-                player.SetIsMove(false);
 
                 if (isMonster)
                 {
@@ -207,6 +212,7 @@ namespace FSM
                     return;
                 }
 
+                //player.SetIsMove(false);
                 player.ChangeState(PlayerState.combatIdle);
 
                 return;
@@ -253,6 +259,9 @@ namespace FSM
 
         public override void Excute()
         {
+            if (player.GetIsMove() == false)
+                return;
+
             //Debug.Log("PlayerAttackExcute");
             if (player.GetInput().MoveInput && !attacking)
             {
@@ -322,6 +331,8 @@ namespace FSM
 
         public override void Excute()
         {
+            if (player.GetIsMove() == false)
+                return;
             //Debug.Log("PlayerAbilityExcute");
             // 끝까지 애니메이션 출력
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ability")

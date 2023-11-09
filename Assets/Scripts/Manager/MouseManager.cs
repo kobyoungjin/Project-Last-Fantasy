@@ -128,38 +128,44 @@ public class MouseManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f, mask))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
         {
-            if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
+            switch (hit.collider.gameObject.layer)
             {
-                if (cursorType != CursorType.Attack)
-                {
-                    Cursor.SetCursor(attackIcon, new Vector2(attackIcon.width / 5, 0), CursorMode.Auto);
-                    cursorType = CursorType.Attack;
+                case (int)Define.Layer.Monster:
+                    if (cursorType != CursorType.Attack)
+                    {
+                        Cursor.SetCursor(attackIcon, new Vector2(attackIcon.width / 5, 0), CursorMode.Auto);
+                        cursorType = CursorType.Attack;
+                        SelectTarget(hit.transform, 0.0004f, Color.red);
+                    }
+                    break;
+                case (int)Define.Layer.NPC:
+                    if (cursorType != CursorType.Hand)
+                    {
+                        Cursor.SetCursor(handIcon, new Vector2(handIcon.width / 3, 0), CursorMode.Auto);
+                        cursorType = CursorType.Hand;
 
-                    SelectTarget(hit.transform, 0.0003f, Color.red);
-                }
-            }
-            else if (hit.collider.gameObject.layer == (int)Define.Layer.NPC)
-            {
-                if (cursorType != CursorType.Hand)
-                {
-                    Cursor.SetCursor(handIcon, new Vector2(handIcon.width / 3, 0), CursorMode.Auto);
-                    cursorType = CursorType.Hand;
+                        SelectTarget(hit.transform, 0.02f, Color.yellow);
+                    }
+                    break;
+                default:
+                    if (cursorType != CursorType.Default)
+                    {
+                        Cursor.SetCursor(defaultIcon, new Vector2(defaultIcon.width / 3, 0), CursorMode.Auto);
+                        cursorType = CursorType.Default;
 
-                    SelectTarget(hit.transform, 0.02f, Color.yellow);
-                }
+                        ClearTarget();
+                    }
+                    break;
             }
-            else
-            {
-                if (cursorType != CursorType.Default)
-                {
-                    Cursor.SetCursor(defaultIcon, new Vector2(defaultIcon.width / 3, 0), CursorMode.Auto);
-                    cursorType = CursorType.Default;
-
-                    ClearTarget();
-                }
-            }
+        }
+        else
+        {
+            Cursor.SetCursor(defaultIcon, new Vector2(defaultIcon.width / 3, 0), CursorMode.Auto);
+            cursorType = CursorType.Default;
+            ClearTarget();
+            return;
         }
     }
 
@@ -223,5 +229,10 @@ public class MouseManager : MonoBehaviour
                 Debug.Log("layer 7 NPC");
             }
         }
+    }
+
+    public Transform GetTarget()
+    {
+        return selectedTarget;
     }
 }

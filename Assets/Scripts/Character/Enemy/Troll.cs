@@ -24,6 +24,8 @@ public class Troll : Status
         player = GameObject.FindGameObjectWithTag("Player");
         navMeshAgent = transform.GetComponent<NavMeshAgent>();
         Managers.UI.Make3D_UI<UI_HPBar>(transform);
+
+        this.transform.GetChild(2).GetComponent<Renderer>().sharedMaterial.SetFloat("_OutLineWidth", 0);
     }
 
     private void Update()

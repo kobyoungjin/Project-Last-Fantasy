@@ -22,11 +22,18 @@ public class InputManager : MonoBehaviour
     public bool KeyCodeQ { get => keyCodeQ; }
     public bool QuitInput { get => quitInput; }
 
+    GameManager gameManager;
+
+    private void Start()
+    {
+        gameManager = GetComponent<GameManager>();
+    }
+
     void Update()
     {
-        moveInput = Input.GetMouseButton(1);
-        attackInput = Input.GetMouseButton(0);
-        keyCodeQ = Input.GetKeyDown(KeyCode.Q);
+        moveInput = gameManager.isAction ? false : Input.GetMouseButton(1);
+        attackInput = gameManager.isAction ? false : Input.GetMouseButton(0);
+        keyCodeQ = gameManager.isAction ? false : Input.GetKeyDown(KeyCode.Q);
         quitInput = Input.GetKeyDown(KeyCode.Escape);
 
         //print("InputManager print"+moveInput);
