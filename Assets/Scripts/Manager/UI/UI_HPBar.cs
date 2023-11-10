@@ -7,7 +7,7 @@ public class UI_HPBar : UI_Base
 {
     enum GameObjects
     {
-        HPBar,
+        HPBar, Interaction
     }
 
     Status status;

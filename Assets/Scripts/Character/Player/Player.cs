@@ -11,6 +11,8 @@ namespace FSM
         private Animator animator;
         private GameManager gameManager;
         private MouseManager mouseManager;
+        GameObject mainCamera;
+        GameObject dialogueCamera;
 
         private Vector3 destination;
         private RaycastHit click;
@@ -77,6 +79,8 @@ namespace FSM
             exp = 0;
             gold = 0;
             isMove = true;
+            mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
+            dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
 
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
@@ -98,10 +102,12 @@ namespace FSM
             if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
             {
                 gameManager.talkPanel.SetActive(false);
+                gameManager.ChangeCamera(dialogueCamera, mainCamera);
                 SetIsMove(true);
                 gameManager.isAction = false;
             }
 
+            
             Debug.Log(isMove);
         }
 
@@ -191,12 +197,13 @@ namespace FSM
             if (click.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
                 //SetIsMove(false);
+                //this.transform.position = dialogueCamera.transform.position + new Vector3(1, 0.2f, 3);
                 gameManager.Action(click.collider.transform.parent.gameObject);
                 GetMouseManager().SetMovePointer(false);
             }
 
 
-                float distance = Vector3.Distance(this.transform.position, destination);
+            float distance = Vector3.Distance(this.transform.position, destination);
             if (click.transform.gameObject.CompareTag("NPC") && distance <= 1.0f)
             {
                 //gameManager.Action(click.collider.gameObject);

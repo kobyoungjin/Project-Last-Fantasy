@@ -16,7 +16,8 @@ public class DialogueCamera : MonoBehaviour
         if (TargetObj == null)
             return;
 
-        transform.position = new Vector3(0, 1f, -8f) + TargetObj.transform.position + Vector3.zero;
+        Vector3 direction = TargetObj.transform.localRotation * Vector3.forward;
+        transform.position = direction + new Vector3(1f, 2f, -6f) + TargetObj.transform.position + Vector3.zero;
         transform.LookAt(TargetObj.transform);
     }
 

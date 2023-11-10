@@ -33,18 +33,7 @@ public class NPCDialogue : MonoBehaviour
             isOpen = true;
     }
 
-    public void ChangeCamera(GameObject main, GameObject sub)
-    {
-        main.SetActive(false);
-        sub.SetActive(true);
-    }
-
-    public void SetDialogue(Transform obj) 
-    {
-        DialogueCamera dialogueCameraScript = FindObjectOfType<DialogueCamera>().GetComponent<DialogueCamera>();
-        ChangeCamera(mainCamera, dialogueCamera);
-        dialogueCameraScript.SetDiaLogTargetObject(obj);
-    }
+   
 
     public void SetOnGUI(string type)
     {

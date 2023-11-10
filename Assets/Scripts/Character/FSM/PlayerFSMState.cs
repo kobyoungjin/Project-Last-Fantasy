@@ -201,7 +201,10 @@ namespace FSM
 
         public override void PhysicsExcute()  // 이동 함수
         {
-            if (player.GetIsMove() && Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f)
+            if (player.GetIsMove() == false)
+                return;
+
+            if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f)
             {
                 player.GetMouseManager().SetMovePointer(false);
 

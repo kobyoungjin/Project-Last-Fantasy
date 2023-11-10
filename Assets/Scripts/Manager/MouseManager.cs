@@ -20,7 +20,7 @@ public class MouseManager : MonoBehaviour
     }
 
     CursorType cursorType = CursorType.None;
-
+    GameManager gameManager;
     NPCDialogue npcDialogue;
     Renderer renderers;
     Transform selectedTarget;
@@ -39,6 +39,7 @@ public class MouseManager : MonoBehaviour
 
     void Start()
     {
+        gameManager = GetComponent<GameManager>();
         //npcDialogue = GameObject.FindObjectOfType<NPCDialogue>().GetComponent<NPCDialogue>();
         attackIcon = Managers.Resource.Load<Texture2D>("TrackingMap/Cursors/Used/Attack");
         handIcon = Managers.Resource.Load<Texture2D>("TrackingMap/Cursors/Used/Hand");
@@ -171,8 +172,10 @@ public class MouseManager : MonoBehaviour
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
-        if (state == PlayerState.die)
+        if (state == PlayerState.die || gameManager.isAction)
             return;
+
+        
 
         switch (evt)
         {

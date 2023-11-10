@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     private bool attackInput;
     private bool keyCodeQ;
     private bool quitInput;
+    private bool interactionInput;
 
     public Action KeyAction = null;
     public Action<Define.MouseEvent> MouseAction = null;
@@ -21,6 +22,7 @@ public class InputManager : MonoBehaviour
     public bool AttackInput { get => attackInput; }
     public bool KeyCodeQ { get => keyCodeQ; }
     public bool QuitInput { get => quitInput; }
+    public bool InteractionInput { get => interactionInput; }
 
     GameManager gameManager;
 
@@ -35,6 +37,7 @@ public class InputManager : MonoBehaviour
         attackInput = gameManager.isAction ? false : Input.GetMouseButton(0);
         keyCodeQ = gameManager.isAction ? false : Input.GetKeyDown(KeyCode.Q);
         quitInput = Input.GetKeyDown(KeyCode.Escape);
+        interactionInput = gameManager.isAction ? false : Input.GetKeyDown(KeyCode.G);
 
         //print("InputManager print"+moveInput);
         //if (Input.GetKeyDown(keyCode))

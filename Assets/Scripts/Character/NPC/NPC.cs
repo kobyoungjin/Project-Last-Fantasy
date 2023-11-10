@@ -24,23 +24,28 @@ public class NPC : MonoBehaviour
 
     }
 
-//    private void OnMouseExit()
-//    {
-//        isExit = true;
-//    }
+    //    private void OnMouseExit()
+    //    {
+    //        isExit = true;
+    //    }
 
-//    private void OnMouseEnter()
-//    {
-//        isExit = false;
-//    }
+    //    private void OnMouseEnter()
+    //    {
+    //        isExit = false;
+    //    }
 
-//    public bool GetMouseExit()
-//    {
-//        return isExit;
-//    }
+    //    public bool GetMouseExit()
+    //    {
+    //        return isExit;
+    //    }
 
-//    public void SetMouseExit(bool act)
-//    {
-//        isExit = act;
-//    }
+    //    public void SetMouseExit(bool act)
+    //    {
+    //        isExit = act;
+    //    }
+
+    public void OnTriggerStay(Collider other)
+    {
+        
+    }
 }

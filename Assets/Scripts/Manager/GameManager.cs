@@ -21,9 +21,13 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public QuestManager questManager;
     public GameObject talkPanel;
     public Text talkText;
+    public Text talkName;
     public GameObject obj;
     public bool isAction;
     public int talkIndex;
+
+    GameObject mainCamera;
+    GameObject dialogueCamera;
 
     void Start()
     {
@@ -31,9 +35,15 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
         troll = GameObject.Find("Troll/Troll_model").GetComponent<Troll>();
         talkManager = GetComponent<TalkManager>();
+        questManager = GetComponent<QuestManager>();
         mouseManager = GetComponent<MouseManager>();
         talkPanel = GameObject.Find("TalkCanvas").transform.GetChild(0).gameObject;
-        talkText = talkPanel.GetComponentInChildren<Text>();
+        talkText = talkPanel.transform.GetChild(0).GetComponent<Text>();
+        talkName = talkPanel.transform.GetChild(1).GetComponent<Text>();
+        mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
+        dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
+
+        Debug.Log(questManager.CheckQuest());
     }
 
     void Update()
@@ -48,23 +58,27 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
         //Debug.Log(obj.name);
 
-        Talk(npc.id, npc.isNpc);
+        Talk(npc.id, npc.isNpc, npc.name);
 
         talkPanel.SetActive(isAction);
+        SetDialogue(obj.transform);
     }
 
-    void Talk(int id, bool isNpc)
+    void Talk(int id, bool isNpc, string name)
     {
-        string talkData = talkManager.GetTalk(id, talkIndex);
+        int questTalkIndex = questManager.GetQuestTalkIndex(id);
+        string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
 
         if(talkData == null)
         {
             isAction = false;
             talkIndex = 0;
+            Debug.Log(questManager.CheckQuest(id));
             return;
         }
              
         talkText.text = talkData;
+        talkName.text = name;
         isAction = true;
         talkIndex++;
     }
@@ -106,6 +120,18 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         textObj.transform.SetParent(obj.transform);
 
         textObj.AddComponent<FloatingText>();
+    }
+    public void ChangeCamera(GameObject main, GameObject sub)
+    {
+        main.SetActive(false);
+        sub.SetActive(true);
+    }
+
+    public void SetDialogue(Transform obj)
+    {
+        DialogueCamera dialogueCameraScript = dialogueCamera.GetComponent<DialogueCamera>();
+        ChangeCamera(mainCamera, dialogueCamera);
+        dialogueCameraScript.SetDiaLogTargetObject(obj);
     }
 
     public Troll GetTrollScript()
