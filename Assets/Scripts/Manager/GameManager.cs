@@ -16,18 +16,20 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
     private Troll troll;
 
-    public MouseManager mouseManager;
-    public TalkManager talkManager;
-    public QuestManager questManager;
+    private MouseManager mouseManager;
+    private TalkManager talkManager;
+    private QuestManager questManager;
+    private AnimationManager animationManager;
     public GameObject talkPanel;
     public Text talkText;
     public Text talkName;
     public GameObject obj;
     public bool isAction;
+
     public int talkIndex;
 
-    GameObject mainCamera;
-    GameObject dialogueCamera;
+    public GameObject mainCamera;
+    public GameObject dialogueCamera;
 
     void Start()
     {
@@ -37,7 +39,8 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         talkManager = GetComponent<TalkManager>();
         questManager = GetComponent<QuestManager>();
         mouseManager = GetComponent<MouseManager>();
-        talkPanel = GameObject.Find("TalkCanvas").transform.GetChild(0).gameObject;
+        animationManager = GetComponent<AnimationManager>();
+        talkPanel = GameObject.Find("EtcCanvas").transform.GetChild(0).gameObject;
         talkText = talkPanel.transform.GetChild(0).GetComponent<Text>();
         talkName = talkPanel.transform.GetChild(1).GetComponent<Text>();
         mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
@@ -137,5 +140,24 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public Troll GetTrollScript()
     {
         return troll;
+    }
+
+    public AnimationManager GetAnimationManager()
+    {
+        return animationManager;
+    }
+
+    public void RejectUI()
+    {
+        isAction = false;
+        talkPanel.transform.parent.gameObject.SetActive(false);
+    }
+
+    public void AcceptUI()
+    {
+        isAction = false;
+        if (talkPanel.transform.parent.gameObject.activeSelf)
+            talkPanel.transform.parent.gameObject.SetActive(false);
+        animationManager.SetFadeScene("Dungeon", 2.0f);
     }
 }

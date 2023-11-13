@@ -11,8 +11,6 @@ namespace FSM
         private Animator animator;
         private GameManager gameManager;
         private MouseManager mouseManager;
-        GameObject mainCamera;
-        GameObject dialogueCamera;
 
         private Vector3 destination;
         private RaycastHit click;
@@ -34,6 +32,8 @@ namespace FSM
 
         protected int exp;
         protected int gold;
+        private GameObject cave;
+        private GameObject ectCanvas;
 
         //[SerializeField]
         //protected int level;
@@ -79,16 +79,15 @@ namespace FSM
             exp = 0;
             gold = 0;
             isMove = true;
-            mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
-            dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
 
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
             mouseManager = gameManager.GetComponent<MouseManager>();
             weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
-            Managers.UI.Make3D_UI<UI_HPBar>(transform);
-            //gameManager.SetText(this.gameObject);
+            //Managers.UI.Make3D_UI<UI_HPBar>(transform);
+            cave = GameObject.Find("Cave").gameObject;
+            ectCanvas = GameObject.Find("EtcCanvas").gameObject;
 
             Enter();
         }
@@ -102,13 +101,12 @@ namespace FSM
             if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
             {
                 gameManager.talkPanel.SetActive(false);
-                gameManager.ChangeCamera(dialogueCamera, mainCamera);
+                gameManager.ChangeCamera(gameManager.dialogueCamera, gameManager.mainCamera);
                 SetIsMove(true);
                 gameManager.isAction = false;
             }
 
-            
-            Debug.Log(isMove);
+            //Debug.Log(isMove);
         }
 
         private void FixedUpdate()
@@ -197,7 +195,7 @@ namespace FSM
             if (click.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
                 //SetIsMove(false);
-                //this.transform.position = dialogueCamera.transform.position + new Vector3(1, 0.2f, 3);
+                this.transform.position = gameManager.dialogueCamera.transform.position + new Vector3(1, 0.2f, 3);
                 gameManager.Action(click.collider.transform.parent.gameObject);
                 GetMouseManager().SetMovePointer(false);
             }
@@ -284,8 +282,17 @@ namespace FSM
         {
             return mouseManager;
         }
+        public void SetAttackStart()
+        {
+            return;
+        }
 
-#endregion
+        public void SetAttackEnd()
+        {
+            return;
+        }
+
+        #endregion
 
         public void OnTriggerEnter(Collider other)
         {
@@ -301,7 +308,41 @@ namespace FSM
                         break;
                 }
             }
+
+            if(other.gameObject.name == "Gate")
+            {
+                gameManager.isAction = true;
+                ectCanvas.transform.GetChild(1).gameObject.SetActive(true);
+            }
         }
+
+        public void OnCollisionEnter(Collision collision)
+        {
+            bool changed = true;
+
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Bridge") && changed) 
+            {
+                changed = false;
+                gameManager.mainCamera.GetComponent<Cam>().SetTarget(cave);
+                gameManager.mainCamera.GetComponent<Cam>().SetViewMode(Define.CameraMode.Backview);
+                //gameManager.GetAnimationManager().SetFadeScene("Dungeon", 1.0f);
+            }
+            else
+            {
+                changed = true;
+                gameManager.mainCamera.GetComponent<Cam>().SetTarget(this.gameObject);
+                gameManager.mainCamera.GetComponent<Cam>().SetViewMode(Define.CameraMode.Quarterview);
+            }
+        }
+
+        //public void OnCollisionExit(Collision collision)
+        //{
+        //    if (collision.gameObject.layer == LayerMask.NameToLayer("Bridge"))
+        //    {
+        //        gameManager.mainCamera.GetComponent<Cam>().SetTarget(this.gameObject);
+        //        gameManager.mainCamera.GetComponent<Cam>().SetViewMode(Define.CameraMode.Quarterview);
+        //    }
+        //}
     }
 }
 

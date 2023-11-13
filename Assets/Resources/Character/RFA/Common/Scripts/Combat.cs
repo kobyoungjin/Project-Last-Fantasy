@@ -33,14 +33,14 @@ namespace Retro.ThirdPersonCharacter
             }
         }
 
-        private void SetAttackStart()
+        void SetAttackStart()
         {
-            AttackInProgress = true;
+
         }
 
-        private void SetAttackEnd()
+        void SetAttackEnd()
         {
-            AttackInProgress = false;
+
         }
 
         private void Attack()

@@ -28,6 +28,7 @@ public class Define : MonoBehaviour
     public enum CameraMode
     {
         Quarterview,
+        Backview,
     }
 
     public enum Scene

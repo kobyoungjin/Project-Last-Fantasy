@@ -201,10 +201,18 @@ namespace FSM
 
         public override void PhysicsExcute()  // 이동 함수
         {
-            if (player.GetIsMove() == false)
+            if (player.GetGameManager().isAction)
+            {   
+                Vector3 cPos = player.GetGameManager().dialogueCamera.transform.position + Vector3.forward * 2;
+                cPos.y = -1.232588f;
+                Debug.Log(cPos);
+                player.transform.position = cPos;
+                player.ChangeState(PlayerState.combatIdle);
                 return;
+            }
+                
 
-            if (Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f)
+            if (player.GetIsMove() && Vector3.Distance(player.GetTargetPosition(), player.transform.position) <= 1.0f)
             {
                 player.GetMouseManager().SetMovePointer(false);
 
@@ -328,7 +336,7 @@ namespace FSM
 
             animator = player.GetAnimator();
             this.player.SetCurrentState(PlayerState.abilityAttack);
-
+            player.SetAttackStart();
             animator.SetInteger("attack", 2);
         }
 
@@ -339,7 +347,7 @@ namespace FSM
             //Debug.Log("PlayerAbilityExcute");
             // 끝까지 애니메이션 출력
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ability")
-             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+             && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
             {
                 player.ChangeState(PlayerState.combatIdle);
                 return;
@@ -350,6 +358,7 @@ namespace FSM
         {
             //Debug.Log("PlayerAbilityExit");
             player.SetPrevState(PlayerState.abilityAttack);
+            player.SetAttackEnd();
             animator.SetInteger("attack", 0);
         }
 
