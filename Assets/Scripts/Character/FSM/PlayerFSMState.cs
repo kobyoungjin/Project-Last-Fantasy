@@ -205,7 +205,6 @@ namespace FSM
             {   
                 Vector3 cPos = player.GetGameManager().dialogueCamera.transform.position + Vector3.forward * 2;
                 cPos.y = -1.232588f;
-                Debug.Log(cPos);
                 player.transform.position = cPos;
                 player.ChangeState(PlayerState.combatIdle);
                 return;

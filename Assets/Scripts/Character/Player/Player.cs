@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace FSM
 {
@@ -35,6 +37,9 @@ namespace FSM
         private GameObject cave;
         private GameObject ectCanvas;
 
+        private Button indexBtn;
+        private GameObject target;
+        Scene scene;
         //[SerializeField]
         //protected int level;
         //[SerializeField]
@@ -80,14 +85,24 @@ namespace FSM
             gold = 0;
             isMove = true;
 
+            scene = SceneManager.GetActiveScene();
+            if(scene.name == "Main")
+            {
+                weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
+                //Managers.UI.Make3D_UI<UI_HPBar>(transform);
+                cave = GameObject.Find("Cave").gameObject;
+            }
+            if (scene.name == "Dungeon")
+            {
+                GameObject spwan = GameObject.Find("SpwanPos");
+                this.transform.position = spwan.transform.position;
+            }
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
             mouseManager = gameManager.GetComponent<MouseManager>();
-            weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
-            //Managers.UI.Make3D_UI<UI_HPBar>(transform);
-            cave = GameObject.Find("Cave").gameObject;
             ectCanvas = GameObject.Find("EtcCanvas").gameObject;
+            indexBtn = ectCanvas.transform.GetChild(0).GetChild(2).GetComponent<Button>();
 
             Enter();
         }
@@ -98,15 +113,20 @@ namespace FSM
 
             Excute();
 
-            if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
+            if(scene.name == "Main")
             {
-                gameManager.talkPanel.SetActive(false);
-                gameManager.ChangeCamera(gameManager.dialogueCamera, gameManager.mainCamera);
-                SetIsMove(true);
-                gameManager.isAction = false;
-            }
+                if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
+                {
+                    gameManager.talkPanel.SetActive(false);
+                    ectCanvas.transform.GetChild(2).gameObject.SetActive(true);
+                    gameManager.ChangeCamera(gameManager.dialogueCamera, gameManager.mainCamera);
+                    SetIsMove(true);
+                    gameManager.isAction = false;
+                }
 
-            //Debug.Log(isMove);
+                if (indexBtn.gameObject.activeSelf)
+                    indexBtn.onClick.AddListener(() => gameManager.Action(target));
+            }
         }
 
         private void FixedUpdate()
@@ -195,7 +215,9 @@ namespace FSM
             if (click.collider.gameObject.layer == (int)Define.Layer.NPC)
             {
                 //SetIsMove(false);
-                this.transform.position = gameManager.dialogueCamera.transform.position + new Vector3(1, 0.2f, 3);
+                target = click.collider.transform.parent.gameObject;
+                //transform.LookAt(click.collider.transform);
+                ectCanvas.transform.GetChild(2).gameObject.SetActive(false);
                 gameManager.Action(click.collider.transform.parent.gameObject);
                 GetMouseManager().SetMovePointer(false);
             }
@@ -205,6 +227,7 @@ namespace FSM
             if (click.transform.gameObject.CompareTag("NPC") && distance <= 1.0f)
             {
                 //gameManager.Action(click.collider.gameObject);
+                
                 SetIsMove(false);
                 return;
             }
@@ -300,7 +323,7 @@ namespace FSM
             {
                 switch (other.transform.root.name)
                 {
-                    case "Troll":
+                    case "Æ®·Ñ":
                         Troll troll = gameManager.GetTrollScript();
                         this.hp -= (int)(troll.AttackDamage * 0.3);
                         break;

@@ -76,6 +76,8 @@ public class MouseManager : MonoBehaviour
     {
         if (renderer != null)
         {
+            if(selectedTarget.parent.name == "ÇÑ½º")
+                renderer.sharedMaterial.SetColor("_OutLineColor", Color.black);
             renderer.sharedMaterial.SetFloat("_OutLineWidth", 0);
         }
     }
@@ -102,7 +104,7 @@ public class MouseManager : MonoBehaviour
     void UpdateMovePoint()
     {
         Vector3 v = TargetPos;
-        v.y = 0;
+        //v.y = 0;
 
         movePoint.transform.position = v;
     }
@@ -125,6 +127,12 @@ public class MouseManager : MonoBehaviour
     {
         if (state == PlayerState.die)
             return;
+
+        if (gameManager.isAction)
+        {
+            ClearTarget();
+            return;
+        }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 

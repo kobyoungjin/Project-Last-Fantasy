@@ -6,7 +6,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public enum Type { Melee, Range };  // 근접, 원거리
-    public enum characterType { Player, Troll };
+    public enum characterType { Player, Troll, Boss };
     public Type type;
     public int damage;
     public float rate;  // 공격속도
@@ -17,23 +17,32 @@ public class Weapon : MonoBehaviour
     { 
         temp = LayerMask.LayerToName(this.gameObject.layer);
         if (this.gameObject.transform.root.name == "Troll")
-            temp = "Troll";
+            temp = this.gameObject.transform.root.name;
+        else if(this.gameObject.transform.root.name == "타이탄")
+            temp = this.gameObject.transform.root.name;
     }
     public void Use()
     {
         if (type == Type.Melee)
         {
-            if(temp == "Player")
+            switch (temp)
             {
-                damage = GameObject.Find(temp).GetComponent<Player>().AttackDamage;
-                rate = GameObject.Find(temp).GetComponent<Player>().Rate;
+                case "Player":
+                    damage = GameObject.Find(temp).GetComponent<Player>().AttackDamage;
+                    rate = GameObject.Find(temp).GetComponent<Player>().Rate;
+                    break;
+                case "Troll":
+                    damage = GameObject.Find(temp).GetComponentInChildren<Troll>().AttackDamage;
+                    rate = GameObject.Find(temp).GetComponentInChildren<Troll>().Rate;
+                    break;
+                case "타이탄":
+                    damage = GameObject.Find(temp).GetComponent<Boss>().AttackDamage;
+                    rate = GameObject.Find(temp).GetComponent<Boss>().Rate;
+                    break;
+                default:
+                    break;
             }
-            else if(temp == "Troll")
-            {
-                damage = GameObject.Find(temp).GetComponentInChildren<Troll>().AttackDamage;
-                rate = GameObject.Find(temp).GetComponentInChildren<Troll>().Rate;
-            }
-           
+
             StopCoroutine("Swing");
             StartCoroutine("Swing");
         }

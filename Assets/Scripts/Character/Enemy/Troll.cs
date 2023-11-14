@@ -65,6 +65,8 @@ public class Troll : Status
         navMeshAgent.angularSpeed = 0;
         transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
         animator.SetBool("dead", true);
+        Player script = player.GetComponent<Player>();
+        script.GetGameManager().GetQuestManager().KilledTroll();
     }
  
 }

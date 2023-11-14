@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 {
@@ -35,18 +36,22 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     {
         Init();
 
-        troll = GameObject.Find("Troll/Troll_model").GetComponent<Troll>();
-        talkManager = GetComponent<TalkManager>();
+        Scene scene = SceneManager.GetActiveScene();
+        if (scene.name == "Main")
+        {
+            talkManager = GetComponent<TalkManager>();
+            talkPanel = GameObject.Find("EtcCanvas").transform.GetChild(0).gameObject;
+            talkText = talkPanel.transform.GetChild(0).GetComponent<Text>();
+            talkName = talkPanel.transform.GetChild(1).GetComponent<Text>();
+            dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
+        }
+
+        troll = GameObject.Find("트롤/Troll_model").GetComponent<Troll>();
         questManager = GetComponent<QuestManager>();
         mouseManager = GetComponent<MouseManager>();
         animationManager = GetComponent<AnimationManager>();
-        talkPanel = GameObject.Find("EtcCanvas").transform.GetChild(0).gameObject;
-        talkText = talkPanel.transform.GetChild(0).GetComponent<Text>();
-        talkName = talkPanel.transform.GetChild(1).GetComponent<Text>();
         mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
-        dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
-
-        Debug.Log(questManager.CheckQuest());
+        
     }
 
     void Update()
@@ -59,12 +64,14 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         this.obj = obj;
         NPC npc = obj.GetComponent<NPC>();
 
-        //Debug.Log(obj.name);
-
+        SetDialogue(obj.transform); // 카메라
         Talk(npc.id, npc.isNpc, npc.name);
 
         talkPanel.SetActive(isAction);
-        SetDialogue(obj.transform);
+        if (talkPanel.activeSelf == false && !isAction)
+            talkPanel.transform.parent.GetChild(2).gameObject.SetActive(true);
+
+        talkIndex++;
     }
 
     void Talk(int id, bool isNpc, string name)
@@ -72,18 +79,22 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         int questTalkIndex = questManager.GetQuestTalkIndex(id);
         string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
 
-        if(talkData == null)
+        Debug.Log(questTalkIndex);
+        if (talkData == null)
         {
             isAction = false;
             talkIndex = 0;
-            Debug.Log(questManager.CheckQuest(id));
+            ChangeCamera(dialogueCamera, mainCamera);
+            
             return;
         }
              
         talkText.text = talkData;
+        if (name == "body")
+            name = "한스";
         talkName.text = name;
         isAction = true;
-        talkIndex++;
+        return;
     }
 
     static void Init()
@@ -147,17 +158,24 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         return animationManager;
     }
 
+    public QuestManager GetQuestManager()
+    {
+        return questManager;
+    }
+
     public void RejectUI()
     {
         isAction = false;
         talkPanel.transform.parent.gameObject.SetActive(false);
     }
 
-    public void AcceptUI()
+    public void AcceptUI(GameObject gameObject)
     {
         isAction = false;
         if (talkPanel.transform.parent.gameObject.activeSelf)
             talkPanel.transform.parent.gameObject.SetActive(false);
+        DontDestroyOnLoad(gameObject);
+        
         animationManager.SetFadeScene("Dungeon", 2.0f);
     }
 }

@@ -9,11 +9,13 @@ public class Managers : MonoBehaviour
 
     InputManager input = new InputManager();
     ResourceManager resource = new ResourceManager();
+    UIManager ui = new UIManager();
+    CameraSingleton cameraSingleton = new CameraSingleton();
+
     public static InputManager Input { get { return Instance.input; } }
     public static ResourceManager Resource { get { return Instance.resource; } }
-
-    UIManager ui = new UIManager();
     public static UIManager UI { get { return Instance.ui; } }
+    public static CameraSingleton Cameras { get { return Instance.cameraSingleton; } }
 
     SceneManagerEx scene = new SceneManagerEx();
     public static SceneManagerEx Scene { get { return Instance.scene; } }

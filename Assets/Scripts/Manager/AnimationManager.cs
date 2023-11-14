@@ -73,15 +73,5 @@ public class AnimationManager : MonoBehaviour
     //    if (savedScene > 0 && savedScene <= 2)
     //        PlayerPrefs.SetInt("SavedScene", savedScene);
     //}
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q)) 
-        {
-            PlayerPrefs.DeleteKey("SavedScene");
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))  // esc 누르면 타이틀 씬으로 (임시)
-        {
-            SetFadeScene("Title", 1);
-        }
-    }
+   
 }

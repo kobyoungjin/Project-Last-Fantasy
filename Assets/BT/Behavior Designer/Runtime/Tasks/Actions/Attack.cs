@@ -29,7 +29,18 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override void OnStart()
         {
-            weapon = enemy.Value.transform.Find("troll/base/hips/spine/chest/upper_arm.R/forearm.R/hand.R/weapon/weapon_end").GetComponent<Weapon>();
+            switch (enemy.Value.transform.root.name)
+            {
+                case "∆Æ∑—":
+                    weapon = enemy.Value.GetComponent<Weapon>();
+                    break;
+                case "≈∏¿Ã≈∫":
+                    weapon = enemy.Value.GetComponent<Weapon>();
+                    break;
+                default:
+                    break;
+            }
+            
             //Debug.Log(weapon.name);
         }
 
