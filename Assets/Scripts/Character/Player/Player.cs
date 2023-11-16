@@ -21,6 +21,10 @@ namespace FSM
         public StateMachine<Player> currentFSM;
         public BaseState<Player>[] arrState = new BaseState<Player>[(int)PlayerState.end];
 
+        static Player instace;
+        static Player Instance { get { HInit(); return instace; } }
+
+
         public PlayerState currentState;
         public PlayerState prevState;
         Weapon weapon;
@@ -40,25 +44,7 @@ namespace FSM
         private Button indexBtn;
         private GameObject target;
         Scene scene;
-        //[SerializeField]
-        //protected int level;
-        //[SerializeField]
-        //protected int hp;
-        //[SerializeField]
-        //protected int maxHp;
-        //[SerializeField]
-        //protected int attackDamage;
-        //[SerializeField]
-        //protected int defense;
-        //[SerializeField]
-        //protected float moveSpeed;
 
-        //public int Level { get { return level; } set { level = value; } }
-        //public int Hp { get { return hp; } set { hp = value; } }
-        //public int MaxHp { get { return maxHp; } set { maxHp = value; } }
-        //public int AttackDamage { get { return attackDamage; } set { attackDamage = value; } }
-        //public int Defense { get { return defense; } set { defense = value; } }
-        //public float MoveSpeed { get { return moveSpeed; } set { moveSpeed = value; } }
         public int Exp { get { return exp; } set { exp = value; } }
         public int Gold { get { return gold; } set { gold = value; } }
 
@@ -70,6 +56,8 @@ namespace FSM
         void Awake()
         {
             this.playerRigidbody = GetComponent<Rigidbody>();
+
+            HInit();
         }
 
         void Start()
@@ -91,6 +79,7 @@ namespace FSM
                 weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
                 //Managers.UI.Make3D_UI<UI_HPBar>(transform);
                 cave = GameObject.Find("Cave").gameObject;
+
             }
      
             animator = GetComponent<Animator>();
@@ -153,6 +142,22 @@ namespace FSM
             arrState[(int)PlayerState.abilityAttack] = new PlayerAbilityAttack(this);
 
             currentFSM.SetState(arrState[(int)PlayerState.idle], this);
+        }
+
+        static void HInit()
+        {
+            if (instace == null)
+            {
+                GameObject obj = GameObject.Find("Player");
+                if (obj == null)
+                {
+                    obj = new GameObject { name = "Player" };
+                    obj.AddComponent<Player>();
+                }
+
+                DontDestroyOnLoad(obj);
+                instace = obj.GetComponent<Player>();
+            }
         }
 
         // 스테이트 바꿔주는 함수
@@ -339,12 +344,15 @@ namespace FSM
                     default:
                         break;
                 }
+                return;
             }
 
-            if(other.gameObject.name == "Gate")
+            if(other.gameObject.CompareTag("Rock"))
             {
-                gameManager.isAction = true;
-                ectCanvas.transform.GetChild(1).gameObject.SetActive(true);
+               
+                this.hp -= (int)(other.gameObject.GetComponent<Rock>().damage);
+                float ratio = this.hp / (float)maxHp;
+                return;
             }
         }
 

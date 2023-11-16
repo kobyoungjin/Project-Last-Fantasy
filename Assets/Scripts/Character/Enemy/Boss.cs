@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using FSM;
 
 public class Boss : Status
@@ -11,18 +12,22 @@ public class Boss : Status
     NavMeshAgent navMeshAgent;
     bool isAlive = true;
 
+    Slider bossHP;
+    GameObject getOutGateUI;
     private void Start()
     {
         level = 3;
-        hp = 100;
-        maxHp = 100;
+        hp = 200;
+        maxHp = 200;
         attackDamage = 25;
         rate = 1.0f;
-        defense = 20;
+        defense = 5;
 
         animator = this.GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player");
         navMeshAgent = transform.GetComponent<NavMeshAgent>();
+        bossHP = GameObject.Find("BossCanvas").GetComponentInChildren<Slider>();
+        getOutGateUI = GameObject.Find("EtcCanvas").transform.GetChild(5).gameObject;
     }
 
     private void Update()
@@ -36,8 +41,8 @@ public class Boss : Status
             }
             else
             {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName("death 2") &&
-            animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Death") &&
+                    animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 {
                     Destroy(this.gameObject, 3.0f);
                     return;
@@ -49,10 +54,10 @@ public class Boss : Status
 
     public void Damaged(float attack)
     {
-        transform.LookAt(player.transform);
+        hp -= (int)(attack);// / defense);
+        float ratio = hp / (float)maxHp;
 
-        hp -= (int)attack;
-
+        bossHP.value = ratio;
     }
 
     public void Dead()
@@ -60,10 +65,13 @@ public class Boss : Status
         isAlive = false;
         navMeshAgent.isStopped = true;
         navMeshAgent.angularSpeed = 0;
-        transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
+        GetComponent<CapsuleCollider>().enabled = false;
         animator.SetBool("dead", true);
         Player script = player.GetComponent<Player>();
-        script.GetGameManager().GetQuestManager().KilledTroll();
+        script.GetGameManager().isClear = true;
+        getOutGateUI.SetActive(true);
+
+        //script.GetGameManager().GetQuestManager().KilledTroll();
     }
 
 }

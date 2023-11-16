@@ -27,26 +27,32 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public Text talkName;
     public GameObject obj;
     public bool isAction;
+    public bool isClear = false;
 
     public int talkIndex;
 
     public GameObject mainCamera;
     public GameObject dialogueCamera;
+    public GameObject minimapCamera;
 
     private GameObject questUI;
+    GameObject etcCanvas;
 
     void Start()
     {
         Init();
 
+        etcCanvas = GameObject.Find("EtcCanvas");
         Scene scene = SceneManager.GetActiveScene();
         if (scene.name == "Heian")
         {
             talkManager = GetComponent<TalkManager>();
-            talkPanel = GameObject.Find("EtcCanvas").transform.GetChild(1).gameObject;
+            talkPanel = etcCanvas.transform.GetChild(1).gameObject;
             talkText = talkPanel.transform.GetChild(0).GetComponent<Text>();
             talkName = talkPanel.transform.GetChild(1).GetComponent<Text>();
             dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
+            minimapCamera = GameObject.Find("Camera").transform.GetChild(2).gameObject;
+            minimapCamera.GetComponent<Camera>().orthographicSize = 8;
         }
 
         troll = GameObject.Find("Æ®·Ñ/Troll_model").GetComponent<Troll>();
@@ -55,7 +61,8 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         animationManager = GetComponent<AnimationManager>();
         mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
         questUI = Resources.Load<GameObject>("Prefabs/UI/QuestUI");
-        questBody = GameObject.Find("EtcCanvas").transform.GetChild(3).GetChild(1).gameObject;
+        questBody = etcCanvas.transform.GetChild(3).GetChild(1).gameObject;
+        
     }
 
     void Update()
@@ -181,15 +188,15 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public void RejectUI()
     {
         isAction = false;
-        talkPanel.transform.parent.gameObject.SetActive(false);
+        etcCanvas.transform.GetChild(2).gameObject.SetActive(false);
     }
 
     public void AcceptUI(GameObject gameObject)
     {
         isAction = false;
-        if (talkPanel.transform.parent.gameObject.activeSelf)
-            talkPanel.transform.parent.gameObject.SetActive(false);
-        DontDestroyOnLoad(gameObject);
+        if (etcCanvas.gameObject.activeSelf)
+            etcCanvas.transform.GetChild(2).gameObject.SetActive(false);
+        //Destroy(gameObject);
         
         animationManager.SetFadeScene("Dungeon", 2.0f);
     }

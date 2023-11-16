@@ -1,6 +1,7 @@
 using UnityEngine;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
+using System.Collections;
 
 namespace BehaviorDesigner.Runtime.Tasks.Movement
 {
@@ -11,16 +12,26 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         [Tooltip("Angular speed of the enemy")]
         public SharedFloat angularSpeed;
 
-                
+        public SharedInt ranAction;
+        Animator animator;
+        private GameObject Spwan;
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            animator = this.GetComponent<Animator>();
+            
+        }
         public override TaskStatus OnUpdate()
         {
-            Animator animator = gameObject.GetComponent<Animator>();
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f
-                &&animator.GetCurrentAnimatorStateInfo(0).IsName("attack1"))
+            int num = animator.GetInteger("attack");
+            if(num != 0)
             {
                 return TaskStatus.Running;
             }
 
+            Spwan = GameObject.Find("SpwanPos").gameObject;
+            targetTransform = Spwan.GetComponent<Spwan>().GetPlayer().transform;
             var lookRotation = targetTransform.Value.position - transform.position;
             var lookAt = Quaternion.LookRotation(lookRotation);
 
@@ -33,8 +44,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
             if (lookRotation != Vector3.zero)
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, angularSpeed.Value * Time.deltaTime);
-       
-           
+
+
             return TaskStatus.Running;
         }
     }

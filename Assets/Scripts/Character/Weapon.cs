@@ -36,8 +36,8 @@ public class Weapon : MonoBehaviour
                     rate = GameObject.Find(temp).GetComponentInChildren<Troll>().Rate;
                     break;
                 case "≈∏¿Ã≈∫":
-                    damage = GameObject.Find(temp).GetComponent<Boss>().AttackDamage;
-                    rate = GameObject.Find(temp).GetComponent<Boss>().Rate;
+                    damage = GameObject.Find(temp).GetComponentInChildren<Boss>().AttackDamage;
+                    rate = GameObject.Find(temp).GetComponentInChildren<Boss>().Rate;
                     break;
                 default:
                     break;

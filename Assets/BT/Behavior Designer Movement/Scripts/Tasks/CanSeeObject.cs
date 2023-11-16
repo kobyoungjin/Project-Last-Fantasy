@@ -50,6 +50,14 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         private int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
 
+        //public override void OnStart()
+        //{
+        //    base.OnStart();
+
+            
+        //}
+
+
         // Returns success if an object was found otherwise failure
         public override TaskStatus OnUpdate()
         {

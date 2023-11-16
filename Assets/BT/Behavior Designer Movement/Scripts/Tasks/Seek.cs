@@ -12,17 +12,25 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public SharedGameObject target;
         [Tooltip("If target is null then use the target position")]
         public SharedVector3 targetPosition;
+
+        Animator animator;
         public override void OnStart()
         {
             base.OnStart();
 
             SetDestination(Target());
+
+            animator = this.GetComponent<Animator>();
         }
 
         // Seek the destination. Return success once the agent has reached the destination.
         // Return running if the agent hasn't reached the destination yet
         public override TaskStatus OnUpdate()
         {
+            int num = animator.GetInteger("attack");
+            if (num != 0) return TaskStatus.Failure;
+
+
             if (HasArrived()) {
                 
                 return TaskStatus.Success;

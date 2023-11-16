@@ -47,7 +47,12 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         public override TaskStatus OnUpdate()
         {
-            if (weapon == null) return TaskStatus.Failure;
+            if (weapon == null)
+            {
+                animator.SetInteger("attack", 0);
+                return TaskStatus.Failure;
+            }
+                
             fireDelay += Time.deltaTime;
 
             isFireReady = weapon.rate < fireDelay;

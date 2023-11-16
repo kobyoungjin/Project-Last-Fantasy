@@ -15,9 +15,12 @@ namespace BehaviorDesigner.Runtime.Tasks
         }
         public override TaskStatus OnUpdate()
         {
-            hp = this.GetComponent<Troll>().Hp;
-            //Debug.Log(hp);
-            if(hp.Value <= 0)
+            if(this.gameObject.transform.root.name == "트롤")
+                hp = this.GetComponent<Troll>().Hp;
+            else if(this.gameObject.transform.root.name == "타이탄")
+                hp = this.GetComponent<Boss>().Hp;
+
+            if (hp.Value <= 0)
             {
                 this.GetComponent<BehaviorTree>().enabled = false;
                 return TaskStatus.Success;
@@ -28,7 +31,7 @@ namespace BehaviorDesigner.Runtime.Tasks
         }
         public override void OnTriggerEnter(Collider other)
         {
-            if(other.CompareTag("Melee"))
+            if(other.CompareTag("Melee") && other.gameObject.transform.root.name == "트롤")
             {
                 animator.SetTrigger("hit1");
             }
