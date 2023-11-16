@@ -14,6 +14,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public Animator animator;
         [Tooltip("The transform that the agent is moving towards")]
         public SharedGameObject enemy;
+        public SharedGameObject enemyWeapon;
 
         public SharedString animationName;
         private bool isFireReady = false;
@@ -32,10 +33,10 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             switch (enemy.Value.transform.root.name)
             {
                 case "∆Æ∑—":
-                    weapon = enemy.Value.GetComponent<Weapon>();
+                    weapon = enemyWeapon.Value.GetComponent<Weapon>();
                     break;
                 case "≈∏¿Ã≈∫":
-                    weapon = enemy.Value.GetComponent<Weapon>();
+                    weapon = enemyWeapon.Value.GetComponent<Weapon>();
                     break;
                 default:
                     break;

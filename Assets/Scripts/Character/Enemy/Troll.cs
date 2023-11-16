@@ -9,6 +9,7 @@ public class Troll : Status
     Animator animator;
     GameObject player;
     NavMeshAgent navMeshAgent;
+    GameManager gameManager;
     bool isAlive = true;
     
     private void Start()
@@ -24,7 +25,7 @@ public class Troll : Status
         player = GameObject.FindGameObjectWithTag("Player");
         navMeshAgent = transform.GetComponent<NavMeshAgent>();
         Managers.UI.Make3D_UI<UI_HPBar>(transform);
-
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         this.transform.GetChild(2).GetComponent<Renderer>().sharedMaterial.SetFloat("_OutLineWidth", 0);
     }
 
@@ -42,7 +43,7 @@ public class Troll : Status
                 if (animator.GetCurrentAnimatorStateInfo(0).IsName("death 2") &&
             animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 {
-                    Destroy(this.gameObject, 3.0f);
+                    Destroy(this.transform.parent.gameObject, 3.0f);
                     return;
                 }
                 navMeshAgent.isStopped = true;

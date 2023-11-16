@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     private QuestManager questManager;
     private AnimationManager animationManager;
     public GameObject talkPanel;
+    GameObject questBody;
     public Text talkText;
     public Text talkName;
     public GameObject obj;
@@ -32,6 +33,8 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public GameObject mainCamera;
     public GameObject dialogueCamera;
 
+    private GameObject questUI;
+
     void Start()
     {
         Init();
@@ -40,7 +43,7 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         if (scene.name == "Main")
         {
             talkManager = GetComponent<TalkManager>();
-            talkPanel = GameObject.Find("EtcCanvas").transform.GetChild(0).gameObject;
+            talkPanel = GameObject.Find("EtcCanvas").transform.GetChild(1).gameObject;
             talkText = talkPanel.transform.GetChild(0).GetComponent<Text>();
             talkName = talkPanel.transform.GetChild(1).GetComponent<Text>();
             dialogueCamera = GameObject.Find("Camera").transform.GetChild(1).gameObject;
@@ -51,7 +54,8 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         mouseManager = GetComponent<MouseManager>();
         animationManager = GetComponent<AnimationManager>();
         mainCamera = GameObject.Find("Camera").transform.GetChild(0).gameObject;
-        
+        questUI = Resources.Load<GameObject>("Prefabs/UI/QuestUI");
+        questBody = GameObject.Find("EtcCanvas").transform.GetChild(3).GetChild(1).gameObject;
     }
 
     void Update()
@@ -69,7 +73,7 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
         talkPanel.SetActive(isAction);
         if (talkPanel.activeSelf == false && !isAction)
-            talkPanel.transform.parent.GetChild(2).gameObject.SetActive(true);
+            talkPanel.transform.parent.GetChild(3).gameObject.SetActive(true);
 
         talkIndex++;
     }
@@ -78,18 +82,29 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     {
         int questTalkIndex = questManager.GetQuestTalkIndex(id);
         string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
+        Debug.Log("Äù½ºÆ® ÀÎµ¦½º: " + questTalkIndex + "id: "+ id);
 
-        Debug.Log(questTalkIndex);
         if (talkData == null)
         {
             isAction = false;
             talkIndex = 0;
             ChangeCamera(dialogueCamera, mainCamera);
-            
+            questManager.NextQuest();
+            if(questBody.transform.childCount != 0)
+                Destroy(questBody.transform.GetChild(0).gameObject);
+            GameObject instace = Instantiate(questUI, questBody.transform);
+            instace.GetComponent<Text>().text = questManager.CheckQuest(id);
             return;
         }
-             
-        talkText.text = talkData;
+        if(isNpc)
+        {
+            talkText.text = talkData.Split(':')[0];
+        }
+        else
+        {
+            talkText.text = talkData;
+        }
+        
         if (name == "body")
             name = "ÇÑ½º";
         talkName.text = name;

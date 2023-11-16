@@ -92,17 +92,13 @@ namespace FSM
                 //Managers.UI.Make3D_UI<UI_HPBar>(transform);
                 cave = GameObject.Find("Cave").gameObject;
             }
-            if (scene.name == "Dungeon")
-            {
-                GameObject spwan = GameObject.Find("SpwanPos");
-                this.transform.position = spwan.transform.position;
-            }
+     
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
             inputManager = gameManager.GetComponent<InputManager>();
             mouseManager = gameManager.GetComponent<MouseManager>();
             ectCanvas = GameObject.Find("EtcCanvas").gameObject;
-            indexBtn = ectCanvas.transform.GetChild(0).GetChild(2).GetComponent<Button>();
+            indexBtn = ectCanvas.transform.GetChild(1).GetChild(2).GetComponent<Button>();
 
             Enter();
         }
@@ -117,15 +113,26 @@ namespace FSM
             {
                 if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
                 {
+                    gameManager.talkIndex = 0;
                     gameManager.talkPanel.SetActive(false);
-                    ectCanvas.transform.GetChild(2).gameObject.SetActive(true);
+                    ectCanvas.transform.GetChild(3).gameObject.SetActive(true);
                     gameManager.ChangeCamera(gameManager.dialogueCamera, gameManager.mainCamera);
                     SetIsMove(true);
                     gameManager.isAction = false;
                 }
 
-                if (indexBtn.gameObject.activeSelf)
-                    indexBtn.onClick.AddListener(() => gameManager.Action(target));
+                if(gameManager.talkPanel.activeSelf && inputManager.InteractionInput)
+                {
+                    gameManager.Action(target);
+                }
+            }
+
+            if (inputManager.QuestInput && !gameManager.isAction)
+            {
+                if (ectCanvas.transform.GetChild(3).gameObject.activeSelf)
+                    ectCanvas.transform.GetChild(3).gameObject.SetActive(false);
+                else
+                    ectCanvas.transform.GetChild(3).gameObject.SetActive(true);
             }
         }
 
@@ -217,7 +224,7 @@ namespace FSM
                 //SetIsMove(false);
                 target = click.collider.transform.parent.gameObject;
                 //transform.LookAt(click.collider.transform);
-                ectCanvas.transform.GetChild(2).gameObject.SetActive(false);
+                ectCanvas.transform.GetChild(3).gameObject.SetActive(false);
                 gameManager.Action(click.collider.transform.parent.gameObject);
                 GetMouseManager().SetMovePointer(false);
             }
@@ -326,6 +333,8 @@ namespace FSM
                     case "Æ®·Ñ":
                         Troll troll = gameManager.GetTrollScript();
                         this.hp -= (int)(troll.AttackDamage * 0.3);
+                        float ratio = this.hp / (float)maxHp;
+                        ectCanvas.transform.GetChild(0).GetComponent<Slider>().value = ratio;
                         break;
                     default:
                         break;
