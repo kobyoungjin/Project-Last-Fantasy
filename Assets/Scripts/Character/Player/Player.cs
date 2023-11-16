@@ -86,7 +86,7 @@ namespace FSM
             isMove = true;
 
             scene = SceneManager.GetActiveScene();
-            if(scene.name == "Main")
+            if(scene.name == "Heian")
             {
                 weapon = GameObject.FindGameObjectWithTag("Melee").GetComponent<Weapon>();
                 //Managers.UI.Make3D_UI<UI_HPBar>(transform);
@@ -109,7 +109,7 @@ namespace FSM
 
             Excute();
 
-            if(scene.name == "Main")
+            if(scene.name == "Heian")
             {
                 if (gameManager.talkPanel.activeSelf && inputManager.QuitInput)
                 {

@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class DialogueCamera : MonoBehaviour
 {
-    GameObject targetObj;
-
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private GameObject targetObj;
 
     void LateUpdate()
     {
