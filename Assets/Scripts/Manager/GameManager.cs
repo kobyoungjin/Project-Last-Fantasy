@@ -80,7 +80,11 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
         talkPanel.SetActive(isAction);
         if (talkPanel.activeSelf == false && !isAction)
-            talkPanel.transform.parent.GetChild(3).gameObject.SetActive(true);
+        {
+            questBody.transform.parent.gameObject.SetActive(true);
+            talkPanel.transform.parent.GetChild(4).gameObject.SetActive(true);
+        }
+            
 
         talkIndex++;
     }

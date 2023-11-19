@@ -105,6 +105,7 @@ namespace FSM
                     gameManager.talkIndex = 0;
                     gameManager.talkPanel.SetActive(false);
                     ectCanvas.transform.GetChild(3).gameObject.SetActive(true);
+                    ectCanvas.transform.GetChild(4).gameObject.SetActive(true);
                     gameManager.ChangeCamera(gameManager.dialogueCamera, gameManager.mainCamera);
                     SetIsMove(true);
                     gameManager.isAction = false;
@@ -230,6 +231,7 @@ namespace FSM
                 target = click.collider.transform.parent.gameObject;
                 //transform.LookAt(click.collider.transform);
                 ectCanvas.transform.GetChild(3).gameObject.SetActive(false);
+                ectCanvas.transform.GetChild(4).gameObject.SetActive(false);
                 gameManager.Action(click.collider.transform.parent.gameObject);
                 GetMouseManager().SetMovePointer(false);
             }
