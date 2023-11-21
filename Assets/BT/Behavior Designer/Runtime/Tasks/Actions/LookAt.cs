@@ -30,12 +30,15 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
                 return TaskStatus.Running;
             }
 
-            Spwan = GameObject.Find("SpwanPos").gameObject;
+            if(this.gameObject.transform.root.name == "타이탄")
+                Spwan = GameObject.Find("SpwanPos").gameObject;
+            else
+                Spwan = GameObject.Find("StartPos").gameObject;
             targetTransform = Spwan.GetComponent<Spwan>().GetPlayer().transform;
             var lookRotation = targetTransform.Value.position - transform.position;
             var lookAt = Quaternion.LookRotation(lookRotation);
 
-            gameObject.transform.LookAt(targetTransform.Value.transform);
+            //gameObject.transform.LookAt(targetTransform.Value.transform);
 
             if (Quaternion.Angle(lookAt, transform.rotation) <= 5.0f)  // 앵글각이 5보다 작으면 ok
             {

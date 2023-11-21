@@ -13,6 +13,8 @@ public class Weapon : MonoBehaviour
     public BoxCollider meleeArea;
     public TrailRenderer trailEffect;
     string temp;
+
+    float time;
     private void Start()
     { 
         temp = LayerMask.LayerToName(this.gameObject.layer);
@@ -30,10 +32,12 @@ public class Weapon : MonoBehaviour
                 case "Player":
                     damage = GameObject.Find(temp).GetComponent<Player>().AttackDamage;
                     rate = GameObject.Find(temp).GetComponent<Player>().Rate;
+                    time = 0.1f;
                     break;
                 case "Troll":
                     damage = GameObject.Find(temp).GetComponentInChildren<Troll>().AttackDamage;
                     rate = GameObject.Find(temp).GetComponentInChildren<Troll>().Rate;
+                    time = 0.5f;
                     break;
                 case "≈∏¿Ã≈∫":
                     damage = GameObject.Find(temp).GetComponentInChildren<Boss>().AttackDamage;
@@ -54,7 +58,7 @@ public class Weapon : MonoBehaviour
         if(trailEffect != null)
             trailEffect.enabled = true;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(time);
         meleeArea.enabled = false;
 
         yield return new WaitForSeconds(0.2f);

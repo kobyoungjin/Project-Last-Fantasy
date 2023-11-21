@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class QuestManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class QuestManager : MonoBehaviour
     Dictionary<int, QuestData> questList;
 
     public int trollKilled = 0;
-    private int maxKill = 3;
+    private int maxKill = 2;
 
     GameObject questBody;
     void Awake()
@@ -21,6 +22,8 @@ public class QuestManager : MonoBehaviour
 
     private void Start()
     {
+        Scene scene = SceneManager.GetActiveScene();
+        if (scene.name == "Title") return;
         questBody = GameObject.Find("EtcCanvas").transform.GetChild(3).GetChild(1).gameObject;
     }
 

@@ -19,7 +19,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         public SharedString animationName;
         private bool isFireReady = false;
         Weapon weapon;
-        float fireDelay;
+        float fireDelay =0;
 
         private bool triggered = false;
 

@@ -12,6 +12,7 @@ public class DamageCollider : MonoBehaviour
     {
         animator = transform.GetComponentInParent<Animator>();
         boss = transform.GetComponent<Boss>();
+        troll = transform.GetComponentInParent<Troll>();
     }
 
     private void OnTriggerEnter(Collider other)

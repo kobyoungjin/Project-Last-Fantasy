@@ -19,8 +19,8 @@ public class Boss : Status
         level = 3;
         hp = 200;
         maxHp = 200;
-        attackDamage = 25;
-        rate = 1.0f;
+        attackDamage = 20;
+        rate = 0.5f;
         defense = 5;
 
         animator = this.GetComponent<Animator>();

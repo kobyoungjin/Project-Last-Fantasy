@@ -20,6 +20,7 @@ namespace BehaviorDesigner.Runtime.Tasks
             else if(this.gameObject.transform.root.name == "≈∏¿Ã≈∫")
                 hp = this.GetComponent<Boss>().Hp;
 
+
             if (hp.Value <= 0)
             {
                 this.GetComponent<BehaviorTree>().enabled = false;

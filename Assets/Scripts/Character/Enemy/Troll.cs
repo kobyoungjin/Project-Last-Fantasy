@@ -43,7 +43,8 @@ public class Troll : Status
                 if (animator.GetCurrentAnimatorStateInfo(0).IsName("death 2") &&
             animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 {
-                    Destroy(this.transform.parent.gameObject, 3.0f);
+                    //Destroy(this.transform.parent.gameObject, 3.0f);
+                    ObjPooling.instance.ReturnObjectToQueue(transform.parent.gameObject);
                     return;
                 }
                 navMeshAgent.isStopped = true;
@@ -68,6 +69,12 @@ public class Troll : Status
         animator.SetBool("dead", true);
         Player script = player.GetComponent<Player>();
         script.GetGameManager().GetQuestManager().KilledTroll();
+        
     }
  
+
+    public void Alive()
+    {
+        ObjPooling.instance.GetObject();
+    }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AddListenButton : MonoBehaviour
 {
@@ -11,7 +12,16 @@ public class AddListenButton : MonoBehaviour
     void Start()
     {
         btn = GetComponent<Button>();
-        gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+
+        if (btn.gameObject.name == "NewGame")
+        {
+            btn.onClick.AddListener(() => SceneManager.LoadScene("Heian"));
+            
+            return;
+        }
+
+
+        gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();              
 
         btn.onClick.AddListener(() => AcceptUI());
     }
@@ -24,4 +34,5 @@ public class AddListenButton : MonoBehaviour
 
         gameManager.GetComponent<AnimationManager>().SetFadeScene("Heian", 2.0f);
     }
+
 }

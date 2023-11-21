@@ -6,11 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class AnimationManager : MonoBehaviour
 {
-    private Image fader;
+    public Image fader;
 
     private void Start()
     {
-        fader = GameObject.Find("GameManager/SceneAnimation").transform.GetChild(0).GetComponent<Image>();
+        Scene scene = SceneManager.GetActiveScene();
+        if(scene.name == "Title")
+            fader = GameObject.Find("SceneAnimation").transform.GetChild(0).GetComponent<Image>();
+        else
+            fader = GameObject.Find("GameManager/SceneAnimation").transform.GetChild(0).GetComponent<Image>();
 
         fader.rectTransform.sizeDelta = new Vector2(Screen.width + 20, Screen.height + 20);
         fader.gameObject.SetActive(false);

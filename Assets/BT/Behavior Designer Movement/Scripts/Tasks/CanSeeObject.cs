@@ -50,12 +50,16 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
 
         private int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
 
-        //public override void OnStart()
-        //{
-        //    base.OnStart();
+        public override void OnStart()
+        {
+            base.OnStart();
 
-            
-        //}
+            if (this.gameObject.transform.root.name == "≈∏¿Ã≈∫")
+                targetObject = GameObject.Find("SpwanPos").GetComponent<Spwan>().GetPlayer();
+            else
+                targetObject = GameObject.Find("StartPos").GetComponent<Spwan>().GetPlayer();
+
+        }
 
 
         // Returns success if an object was found otherwise failure

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public static InputManager Input { get { return Instance.input; } }
 
     private Troll troll;
+    private Boss boss;
 
     private MouseManager mouseManager;
     private TalkManager talkManager;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
     public GameObject obj;
     public bool isAction;
     public bool isClear = false;
+    public bool isFirst = true;
 
     public int talkIndex;
 
@@ -40,10 +42,17 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
 
     void Start()
     {
+        Scene scene = SceneManager.GetActiveScene();
         Init();
 
+        if (scene.name == "Title")
+        {
+            //animationManager = GetComponent<AnimationManager>();
+            return;
+        }
+            
         etcCanvas = GameObject.Find("EtcCanvas");
-        Scene scene = SceneManager.GetActiveScene();
+       
         if (scene.name == "Heian")
         {
             talkManager = GetComponent<TalkManager>();
@@ -195,7 +204,7 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         etcCanvas.transform.GetChild(2).gameObject.SetActive(false);
     }
 
-    public void AcceptUI(GameObject gameObject)
+    public void AcceptUI()
     {
         isAction = false;
         if (etcCanvas.gameObject.activeSelf)

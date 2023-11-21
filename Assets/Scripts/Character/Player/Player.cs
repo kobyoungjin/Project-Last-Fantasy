@@ -81,6 +81,12 @@ namespace FSM
                 cave = GameObject.Find("Cave").gameObject;
 
             }
+            else if(scene.name == "Title")
+            {
+                this.gameObject.GetComponent<Player>().enabled = false;
+                this.gameObject.GetComponent<CapsuleCollider>().enabled = false;
+                return;
+            }
      
             animator = GetComponent<Animator>();
             gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
@@ -218,7 +224,7 @@ namespace FSM
         {
             SetPosition(click.point);
             //Debug.Log(click.point);
-            GetMouseManager().SetPos(destination);
+            GetMouseManager().SetPos(click.point);
             
             if (click.collider.gameObject.layer == (int)Define.Layer.Monster)
             {
@@ -335,12 +341,20 @@ namespace FSM
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
             {
+                float ratio = 0;
                 switch (other.transform.root.name)
                 {
                     case "∆Æ∑—":
                         Troll troll = gameManager.GetTrollScript();
-                        this.hp -= (int)(troll.AttackDamage * 0.3);
-                        float ratio = this.hp / (float)maxHp;
+                        this.hp -= (int)(troll.AttackDamage * 0.2);
+                        ratio = this.hp / (float)maxHp;
+                        ectCanvas.transform.GetChild(0).GetComponent<Slider>().value = ratio;
+                        break;
+                    case "≈∏¿Ã≈∫":
+                        Boss boss = other.GetComponent<Boss>();
+                        Debug.Log(boss);
+                        this.hp -= (int)(boss.AttackDamage * 0.4);
+                        ratio = this.hp / (float)maxHp;
                         ectCanvas.transform.GetChild(0).GetComponent<Slider>().value = ratio;
                         break;
                     default:
@@ -360,6 +374,12 @@ namespace FSM
 
         public void OnCollisionEnter(Collision collision)
         {
+            scene = SceneManager.GetActiveScene();
+            if (scene.name == "Title")
+            {
+                return;
+            }
+
             bool changed = true;
 
             if (collision.gameObject.layer == LayerMask.NameToLayer("Bridge") && changed) 

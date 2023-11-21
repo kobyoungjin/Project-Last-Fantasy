@@ -22,7 +22,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
         private bool isFireReady = false;
         Weapon weapon;
         Weapon weapon2;
-        float fireDelay;
+        float fireDelay=0;
 
         private bool triggered = false;
 
