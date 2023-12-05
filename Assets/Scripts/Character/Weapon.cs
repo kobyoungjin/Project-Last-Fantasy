@@ -37,11 +37,12 @@ public class Weapon : MonoBehaviour
                 case "Troll":
                     damage = GameObject.Find(temp).GetComponentInChildren<Troll>().AttackDamage;
                     rate = GameObject.Find(temp).GetComponentInChildren<Troll>().Rate;
-                    time = 0.5f;
+                    time = 0.2f;
                     break;
                 case "≈∏¿Ã≈∫":
                     damage = GameObject.Find(temp).GetComponentInChildren<Boss>().AttackDamage;
                     rate = GameObject.Find(temp).GetComponentInChildren<Boss>().Rate;
+                    time = 0.3f;
                     break;
                 default:
                     break;

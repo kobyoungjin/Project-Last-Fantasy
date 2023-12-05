@@ -103,7 +103,7 @@ public class MouseManager : MonoBehaviour
 
     void UpdateMovePoint()
     {
-        Vector3 v = TargetPos;
+        Vector3 v = pos;
         //v.y = 0;
 
         movePoint.transform.position = v;
@@ -111,6 +111,7 @@ public class MouseManager : MonoBehaviour
     public void SetPos(Vector3 pos)
     {
         this.pos = pos;
+        //Debug.Log("pos " + pos);
     }
 
     public void SetMovePointer(bool movePoint)
@@ -190,6 +191,7 @@ public class MouseManager : MonoBehaviour
             case Define.MouseEvent.PointerDown:
                 {
                     TargetPos = pos;
+                    //Debug.Log("move " + movePoint.transform.position);
                     SetMovePointer(true);
                 }
                 break;

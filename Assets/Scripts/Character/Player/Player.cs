@@ -346,7 +346,7 @@ namespace FSM
                 {
                     case "∆Æ∑—":
                         Troll troll = gameManager.GetTrollScript();
-                        this.hp -= (int)(troll.AttackDamage * 0.2);
+                        this.hp -= (int)(troll.AttackDamage * 0.07f);
                         ratio = this.hp / (float)maxHp;
                         ectCanvas.transform.GetChild(0).GetComponent<Slider>().value = ratio;
                         break;
@@ -354,6 +354,24 @@ namespace FSM
                         Boss boss = other.GetComponent<Boss>();
                         Debug.Log(boss);
                         this.hp -= (int)(boss.AttackDamage * 0.4);
+                        ratio = this.hp / (float)maxHp;
+                        ectCanvas.transform.GetChild(0).GetComponent<Slider>().value = ratio;
+                        break;
+                    default:
+                        break;
+                }
+                return;
+            }
+
+            if(other.gameObject.layer == LayerMask.NameToLayer("Boss"))
+            {
+                float ratio = 0;
+                switch (other.transform.root.name)
+                {
+                    case "≈∏¿Ã≈∫":
+                        Boss boss = other.transform.root.GetComponentInChildren<Boss>();
+                        //Debug.Log(boss);
+                        this.hp -= (int)(boss.AttackDamage * 0.1);
                         ratio = this.hp / (float)maxHp;
                         ectCanvas.transform.GetChild(0).GetComponent<Slider>().value = ratio;
                         break;

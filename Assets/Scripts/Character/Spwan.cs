@@ -2,6 +2,7 @@ using FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Spwan : MonoBehaviour
@@ -16,13 +17,19 @@ public class Spwan : MonoBehaviour
     private Transform clearPos;
     private Transform startPos;
 
+    private void Awake()
+    {
+        GameObject temp = GameObject.Find("DontDest");
+        for (int i = 0; i < temp.transform.childCount; i++)
+        {
+            temp.transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
+
     private void Start()
     {
-        Minimap = GameObject.Find("Camera").transform.GetChild(2).gameObject;
         player = GameObject.FindGameObjectWithTag("Player");
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
-
-        Minimap.GetComponent<Camera>().orthographicSize = 10;
 
         Scene scene = SceneManager.GetActiveScene();
         if (scene.name == "Dungeon")
@@ -32,6 +39,11 @@ public class Spwan : MonoBehaviour
         }
         else if (scene.name == "Heian")
         {
+            GameObject temp = GameObject.Find("DontDest");
+            for (int i = 0; i < temp.transform.childCount; i++)
+            {
+                temp.transform.GetChild(i).gameObject.SetActive(true);
+            }
             player.GetComponent<Player>().enabled = true;
             player.GetComponent<CapsuleCollider>().enabled = true;
             clearPos = GameObject.Find("ClearPos").transform;
@@ -43,7 +55,7 @@ public class Spwan : MonoBehaviour
 
             if (gameManager.isClear)
             {
-                //Destroy(player);
+                
                 player.transform.position = clearPos.position;
             }
             else if (gameManager.isFirst)
@@ -54,6 +66,12 @@ public class Spwan : MonoBehaviour
             }
 
         }
+
+        Minimap = GameObject.Find("Camera").transform.GetChild(2).gameObject;
+        
+        
+
+        Minimap.GetComponent<Camera>().orthographicSize = 10;
     }
     public GameObject GetPlayer()
     {

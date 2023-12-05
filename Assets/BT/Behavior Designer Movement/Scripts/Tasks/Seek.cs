@@ -23,9 +23,16 @@ namespace BehaviorDesigner.Runtime.Tasks.Movement
             animator = this.GetComponent<Animator>();
 
             if (this.gameObject.transform.root.name == "≈∏¿Ã≈∫")
+            {
+                //target = GameObject.Find("SpwanPos").GetComponent<Spwan>().GetPlayer();
                 targetPosition = GameObject.Find("SpwanPos").GetComponent<Spwan>().GetPlayer().transform.position;
+            }
+
             else
+            {
+                //target = GameObject.Find("StartPos").GetComponent<Spwan>().GetPlayer();
                 targetPosition = GameObject.Find("StartPos").GetComponent<Spwan>().GetPlayer().transform.position;
+            }
         }
 
         // Seek the destination. Return success once the agent has reached the destination.

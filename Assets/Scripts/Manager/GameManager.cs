@@ -104,6 +104,9 @@ public class GameManager : MonoBehaviour//InheritSingleton<GameManager>
         string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
         Debug.Log("Äù½ºÆ® ÀÎµ¦½º: " + questTalkIndex + "id: "+ id);
 
+        if(questTalkIndex >= 50 && questBody.transform.childCount != 0)
+            Destroy(questBody.transform.GetChild(0).gameObject);
+
         if (talkData == null)
         {
             isAction = false;

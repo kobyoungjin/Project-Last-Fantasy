@@ -12,7 +12,13 @@ public class DialogueCamera : MonoBehaviour
         if (targetObj == null)
             return;
 
-        Vector3 direction = targetObj.transform.forward * 3f + Vector3.up * 1f + Vector3.right;
+        float lookDis = 0;
+        if (targetObj.transform.root.name == "ÇÑ½º")
+            lookDis = 5f;
+        else
+            lookDis = 3f;
+
+        Vector3 direction = targetObj.transform.forward * lookDis + Vector3.up * 1f + Vector3.right;
         transform.position = direction + targetObj.transform.position;// + new Vector3(3f, 3f, -4f) + TargetObj.transform.position + Vector3.zero;
 
         if(targetObj.name == "body")

@@ -38,9 +38,7 @@ public class QuestManager : MonoBehaviour
 
         questList.Add(40, new QuestData("던전의 주인 처치하기",
                                         new int[] { 1000, 3000 }));
-
-        questList.Add(50, new QuestData("퀘스트 완료",
-                                        new int[] { 0 }));
+      
     }
     public int GetQuestTalkIndex(int id) // Npc Id를 받아 퀘스트 번호를 반환하는 함수 
     {
@@ -73,7 +71,7 @@ public class QuestManager : MonoBehaviour
     public void KilledTroll()
     {
         trollKilled += 1;
-        if(questBody.transform.childCount != 0 && trollKilled < maxKill)
+        if(questBody.transform.childCount != 0 && trollKilled <= maxKill)
         {
             questBody.GetComponentInChildren<Text>().text = "트롤 퇴치    " + trollKilled + " / " + maxKill;
         }

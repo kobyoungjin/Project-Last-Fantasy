@@ -14,6 +14,7 @@ public class Boss : Status
 
     Slider bossHP;
     GameObject getOutGateUI;
+    GameObject questBody;
     private void Start()
     {
         level = 3;
@@ -28,6 +29,7 @@ public class Boss : Status
         navMeshAgent = transform.GetComponent<NavMeshAgent>();
         bossHP = GameObject.Find("BossCanvas").GetComponentInChildren<Slider>();
         getOutGateUI = GameObject.Find("EtcCanvas").transform.GetChild(5).gameObject;
+        questBody = GameObject.Find("EtcCanvas").transform.GetChild(3).GetChild(1).gameObject;
     }
 
     private void Update()
@@ -69,6 +71,7 @@ public class Boss : Status
         animator.SetBool("dead", true);
         Player script = player.GetComponent<Player>();
         script.GetGameManager().isClear = true;
+        questBody.GetComponentInChildren<Text>().text = "Äù½ºÆ® ¿Ï·á";
         getOutGateUI.SetActive(true);
 
         //script.GetGameManager().GetQuestManager().KilledTroll();
